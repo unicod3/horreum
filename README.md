@@ -1,4 +1,4 @@
-#![Logo](logo.png) Horreum
+# ![Logo](logo.png) Horreum
 
 ----
 
