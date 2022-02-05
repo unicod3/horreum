@@ -1,0 +1,15 @@
+@startuml SystemContext
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include <office/Servers/database_server>
+
+Person_Ext(Client, "Client", "A client with warehouses and goods in it")
+
+ContainerDb_Ext(RDMS, "Relational Database", "DB Server")
+
+Container(Horreum, "Horreum", "Software System", "Allow clients to manage their warehouse and inventories of each product that they've")
+
+Rel(Client, Horreum, "Uses", "REST API")
+Rel(Horreum, RDMS, "Stores")
+
+SHOW_LEGEND()
+@enduml
