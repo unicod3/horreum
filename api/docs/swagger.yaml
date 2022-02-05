@@ -1,4 +1,157 @@
+definitions:
+  warehouse.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  warehouse.RequestBody:
+    properties:
+      name:
+        type: string
+    type: object
+  warehouse.SuccessResponse:
+    properties:
+      data: {}
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /warehouses/:
+    get:
+      consumes:
+      - application/json
+      description: Get all warehouses
+      operationId: list-warehouse
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/warehouse.SuccessResponse'
+      summary: Get all warehouses
+      tags:
+      - warehouses
+    post:
+      consumes:
+      - application/json
+      description: Create a warehouse with given data
+      operationId: create-warehouse
+      parameters:
+      - description: Warehouse
+        in: body
+        name: warehouse
+        required: true
+        schema:
+          $ref: '#/definitions/warehouse.RequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/warehouse.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/warehouse.ErrorResponse'
+      summary: Create a warehouse with given data
+      tags:
+      - warehouses
+  /warehouses/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a warehouse by id
+      operationId: delete-warehouse
+      parameters:
+      - description: Warehouse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/warehouse.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/warehouse.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/warehouse.ErrorResponse'
+      summary: Delete a warehouse by id
+      tags:
+      - warehouses
+    get:
+      consumes:
+      - application/json
+      description: Get single warehouse by id
+      operationId: get-warehouse
+      parameters:
+      - description: Warehouse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/warehouse.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/warehouse.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/warehouse.ErrorResponse'
+      summary: Get single warehouse by id
+      tags:
+      - warehouses
+    put:
+      consumes:
+      - application/json
+      description: Update a warehouse with given data
+      operationId: update-warehouse
+      parameters:
+      - description: Warehouse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Warehouse
+        in: body
+        name: warehouse
+        required: true
+        schema:
+          $ref: '#/definitions/warehouse.RequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/warehouse.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/warehouse.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/warehouse.ErrorResponse'
+      summary: Update a warehouse with given data
+      tags:
+      - warehouses
 swagger: "2.0"

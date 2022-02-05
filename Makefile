@@ -3,6 +3,7 @@ run:
 
 tidy:
 	go mod tidy
+	go mod vendor
 
 
 # OPEN API swagger generator
