@@ -20,11 +20,14 @@ to document architectural structure, they can be found under `docs/c4model` fold
 
 For the sake of the demo I only designed `System Context` and `Container` Level.
 
-| System Context | Horreum Container |
-| ------------- |:-------------:|
+| 1.System Context                                            |                            2.Horreum Container                             |
+|-------------------------------------------------------------|:--------------------------------------------------------------------------:|
 | <img src="./docs/c4model/SystemContext.png" alt="drawing"/> | <img src="./docs/c4model/HorreumContainer.png" alt="drawing" width="550"/> |
 
  
+## Project structure
+
+Horreum uses [Standard Go Project Layout](https://github.com/golang-standards/project-layout) for the structural design.
 
 
 
