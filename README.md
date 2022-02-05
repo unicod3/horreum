@@ -29,5 +29,9 @@ For the sake of the demo I only designed `System Context` and `Container` Level.
 
 Horreum uses [Standard Go Project Layout](https://github.com/golang-standards/project-layout) for the structural design.
 
+## Design Decisions
+
+> To be filled
+
 
 
