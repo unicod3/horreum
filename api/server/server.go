@@ -5,6 +5,7 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "github.com/unicod3/horreum/api/docs"
+	"github.com/unicod3/horreum/internal/order"
 	"github.com/unicod3/horreum/internal/warehouse"
 	"github.com/unicod3/horreum/pkg/dbclient"
 )
@@ -44,6 +45,9 @@ func (srv *Server) Serve() {
 
 	warehouseHandler := warehouse.NewHandler(srv.DataStore)
 	warehouseHandler.RegisterRoutes(router)
+
+	orderHandler := order.NewHandler(srv.DataStore)
+	orderHandler.RegisterRoutes(router)
 
 	ginRouter.Run(srv.cfg.Addr)
 }

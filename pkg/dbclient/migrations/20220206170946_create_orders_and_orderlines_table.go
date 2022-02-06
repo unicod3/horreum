@@ -13,9 +13,15 @@ func upCreateOrdersAndOrderlinesTable(tx *sql.Tx) error {
 	// This code is executed when the migration is applied.
 	_, err := tx.Exec(`CREATE TABLE orders (
     						id bigserial primary key,
+    						warehouse_id bigint not null,
     						created_at  timestamp without time zone DEFAULT now() NOT NULL,
     						updated_at  timestamp without time zone DEFAULT now() NOT NULL, 
-    						customer varchar(256) not null
+    						customer varchar(256) not null,
+                        		
+    						    CONSTRAINT fk_warehouse
+									FOREIGN KEY(warehouse_id) 
+									REFERENCES warehouses(id)
+									ON DELETE CASCADE
 						);`)
 	if err != nil {
 		return err
@@ -25,7 +31,10 @@ func upCreateOrdersAndOrderlinesTable(tx *sql.Tx) error {
     						order_id bigint not null,
     						created_at  timestamp without time zone DEFAULT now() NOT NULL,
     						updated_at  timestamp without time zone DEFAULT now() NOT NULL, 
-    						customer varchar(256) not null,
+    						sku varchar(256) not null,
+    						quantity bigint not null,
+    						unit_cost bigint  not null,
+    						
     						   CONSTRAINT fk_order
 									FOREIGN KEY(order_id) 
 									REFERENCES orders(id)
