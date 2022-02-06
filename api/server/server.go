@@ -33,6 +33,7 @@ func New(cfg *Config, db *dbclient.DataStorage) *Server {
 
 var ginRouter = gin.Default()
 
+// Serve registers the ginRouter and runs it
 func (srv *Server) Serve() {
 	docs.SwaggerInfo_swagger.Title = srv.cfg.SwaggerTitle
 	docs.SwaggerInfo_swagger.Description = srv.cfg.SwaggerDescription

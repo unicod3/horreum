@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RegisterRoutes registers the package's routes to the gin router
 func (h *Handler) RegisterRoutes(routerGroup *gin.RouterGroup) {
 	warehouses := routerGroup.Group("warehouses")
 	{
