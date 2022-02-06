@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Handler holds db struct
+// Handler holds services that are exposed
 type Handler struct {
 	WarehouseService WarehouseRepository
 }
