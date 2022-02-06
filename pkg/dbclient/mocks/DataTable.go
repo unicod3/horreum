@@ -34,6 +34,20 @@ func (_m *DataTable) Count() (uint64, error) {
 	return r0, r1
 }
 
+// CreateRelated provides a mock function with given fields: tableName, dataAddress
+func (_m *DataTable) CreateRelated(tableName string, dataAddress interface{}) error {
+	ret := _m.Called(tableName, dataAddress)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, interface{}) error); ok {
+		r0 = rf(tableName, dataAddress)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Delete provides a mock function with given fields: cond
 func (_m *DataTable) Delete(cond db.Cond) error {
 	ret := _m.Called(cond)
@@ -41,6 +55,20 @@ func (_m *DataTable) Delete(cond db.Cond) error {
 	var r0 error
 	if rf, ok := ret.Get(0).(func(db.Cond) error); ok {
 		r0 = rf(cond)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeleteRelated provides a mock function with given fields: tableName, condition
+func (_m *DataTable) DeleteRelated(tableName string, condition db.Cond) error {
+	ret := _m.Called(tableName, condition)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, db.Cond) error); ok {
+		r0 = rf(tableName, condition)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -108,6 +136,20 @@ func (_m *DataTable) FindOne(cond db.Cond, dataAddress interface{}) error {
 	var r0 error
 	if rf, ok := ret.Get(0).(func(db.Cond, interface{}) error); ok {
 		r0 = rf(cond, dataAddress)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// FindRelated provides a mock function with given fields: tableName, condition, dataAddress
+func (_m *DataTable) FindRelated(tableName string, condition db.Cond, dataAddress interface{}) error {
+	ret := _m.Called(tableName, condition, dataAddress)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, db.Cond, interface{}) error); ok {
+		r0 = rf(tableName, condition, dataAddress)
 	} else {
 		r0 = ret.Error(0)
 	}

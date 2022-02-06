@@ -67,18 +67,13 @@ type RequestBody struct {
 }
 
 func (o *Order) populateLines(dataTable dbclient.DataTable) error {
-	return dataTable.Session().
-		Collection("order_lines").
-		Find(dbclient.Condition{"order_id": o.ID}).
-		All(&o.Lines)
+	return dataTable.FindRelated("order_lines", dbclient.Condition{"order_id": o.ID}, &o.Lines)
 }
 
 func (o *Order) createLines(dataTable dbclient.DataTable) error {
 	for _, line := range o.Lines {
 		line.OrderID = o.ID
-		err := dataTable.Session().
-			Collection("order_lines").
-			InsertReturning(&line)
+		err := dataTable.CreateRelated("order_lines", &line)
 		if err != nil {
 			return err
 		}
@@ -86,9 +81,7 @@ func (o *Order) createLines(dataTable dbclient.DataTable) error {
 	return nil
 }
 func (o *Order) deleteLines(dataTable dbclient.DataTable) error {
-	return dataTable.Session().
-		Collection("order_lines").
-		Find(dbclient.Condition{"order_id": o.ID}).Delete()
+	return dataTable.DeleteRelated("order_lines", dbclient.Condition{"order_id": o.ID})
 }
 
 // OrderService holds information about the datatable

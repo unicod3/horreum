@@ -26,7 +26,10 @@ type DataTable interface {
 	db.Collection
 	FindAll(dataAddress interface{}) error
 	FindOne(cond Condition, dataAddress interface{}) error
+	FindRelated(tableName string, condition Condition, dataAddress interface{}) error
+	CreateRelated(tableName string, dataAddress interface{}) error
 	Delete(cond Condition) error
+	DeleteRelated(tableName string, condition Condition) error
 }
 
 // Condition is map to define query conditions
@@ -80,4 +83,27 @@ func (c *DataCollection) Delete(cond Condition) error {
 		return err
 	}
 	return nil
+}
+
+// FindRelated finds the related records of given table
+func (c *DataCollection) FindRelated(tableName string, condition Condition, dataAddress interface{}) error {
+	return c.Session().
+		Collection(tableName).
+		Find(condition).
+		All(dataAddress)
+}
+
+// DeleteRelated deletes related records from given table
+func (c *DataCollection) DeleteRelated(tableName string, condition Condition) error {
+	return c.Session().
+		Collection(tableName).
+		Find(condition).
+		Delete()
+}
+
+// CreateRelated creates record on the given related table
+func (c *DataCollection) CreateRelated(tableName string, dataAddress interface{}) error {
+	return c.Session().
+		Collection(tableName).
+		InsertReturning(dataAddress)
 }
