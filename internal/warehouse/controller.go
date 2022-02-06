@@ -2,7 +2,6 @@ package warehouse
 
 import (
 	"github.com/gin-gonic/gin"
-	intWarehouse "github.com/unicod3/horreum/internal/warehouse"
 	"net/http"
 )
 
@@ -13,11 +12,14 @@ import (
 // @ID list-warehouse
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} SuccessResponse
+// @Success 200 {array} Warehouse
 // @Router /warehouses/ [get]
-func List(g *gin.Context) {
-	w := intWarehouse.GetDummyWarehouses()
-	g.JSON(http.StatusOK, SuccessResponse{w})
+func (h *Handler) List(g *gin.Context) {
+	warehouses, err := h.WarehouseService.GetAll()
+	if err != nil {
+		return
+	}
+	g.JSON(http.StatusOK, warehouses)
 }
 
 // Get example
@@ -28,12 +30,12 @@ func List(g *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Warehouse ID"
-// @Success 200 {object} SuccessResponse
+// @Success 200 {object} Warehouse
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /warehouses/{id} [get]
-func Get(g *gin.Context) {
-	warehouse := intWarehouse.Warehouse{}
+func (h *Handler) Get(g *gin.Context) {
+	warehouse := Warehouse{}
 
 	if err := g.ShouldBindUri(&warehouse); err != nil {
 		g.JSON(http.StatusBadRequest, ErrorResponse{
@@ -43,8 +45,14 @@ func Get(g *gin.Context) {
 		return
 	}
 
-	w := intWarehouse.GetWarehouse(warehouse.ID)
-	g.JSON(http.StatusOK, SuccessResponse{w})
+	w, err := h.WarehouseService.GetById(warehouse.ID)
+	if err != nil {
+		g.JSON(http.StatusNotFound, ErrorResponse{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
+	}
+	g.JSON(http.StatusOK, w)
 }
 
 // Create example
@@ -55,12 +63,11 @@ func Get(g *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param warehouse body RequestBody true "Warehouse"
-// @Success 200 {object} SuccessResponse
+// @Success 200 {object} Warehouse
 // @Failure 400 {object} ErrorResponse
 // @Router /warehouses/ [post]
-func Create(g *gin.Context) {
-	warehouse := intWarehouse.Warehouse{}
-
+func (h *Handler) Create(g *gin.Context) {
+	var warehouse Warehouse
 	if err := g.ShouldBindJSON(&warehouse); err != nil {
 		g.JSON(http.StatusBadRequest, ErrorResponse{
 			Code:    http.StatusBadRequest,
@@ -69,8 +76,16 @@ func Create(g *gin.Context) {
 		return
 	}
 
-	w := intWarehouse.CreateWarehouse(warehouse)
-	g.JSON(http.StatusOK, SuccessResponse{w})
+	err := h.WarehouseService.Create(&warehouse)
+	if err != nil {
+		g.JSON(http.StatusInternalServerError, ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	g.JSON(http.StatusCreated, warehouse)
 }
 
 // Update example
@@ -82,12 +97,12 @@ func Create(g *gin.Context) {
 // @Produce  json
 // @Param id path int true "Warehouse ID"
 // @Param warehouse body RequestBody true "Warehouse"
-// @Success 200 {object} SuccessResponse
+// @Success 200 {object} Warehouse
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /warehouses/{id} [put]
-func Update(g *gin.Context) {
-	warehouse := intWarehouse.Warehouse{}
+func (h *Handler) Update(g *gin.Context) {
+	var warehouse Warehouse
 
 	if err := g.ShouldBindUri(&warehouse); err != nil {
 		g.JSON(http.StatusBadRequest, ErrorResponse{
@@ -105,8 +120,16 @@ func Update(g *gin.Context) {
 		return
 	}
 
-	w := intWarehouse.UpdateWarehouse(warehouse)
-	g.JSON(http.StatusOK, SuccessResponse{w})
+	err := h.WarehouseService.Update(&warehouse)
+	if err != nil {
+		g.JSON(http.StatusInternalServerError, ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	g.JSON(http.StatusOK, warehouse)
 }
 
 // Delete example
@@ -117,12 +140,12 @@ func Update(g *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Warehouse ID"
-// @Success 200 {object} SuccessResponse
+// @Success 204 string string "NoContent"
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /warehouses/{id} [delete]
-func Delete(g *gin.Context) {
-	warehouse := intWarehouse.Warehouse{}
+func (h *Handler) Delete(g *gin.Context) {
+	warehouse := Warehouse{}
 
 	if err := g.ShouldBindUri(&warehouse); err != nil {
 		g.JSON(http.StatusBadRequest, ErrorResponse{
@@ -132,6 +155,13 @@ func Delete(g *gin.Context) {
 		return
 	}
 
-	w := intWarehouse.DeleteWarehouse(warehouse)
-	g.JSON(http.StatusOK, SuccessResponse{w})
+	err := h.WarehouseService.Delete(&warehouse)
+	if err != nil {
+		g.JSON(http.StatusInternalServerError, ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+	g.Status(http.StatusNoContent)
 }

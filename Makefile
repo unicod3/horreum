@@ -9,7 +9,7 @@ tidy:
 # OPEN API swagger generator
 # This command will generate docs under the api/docs folder
 swag:
-	swag init --dir=./api/server/ --generalInfo=server.go --output=./api/docs
+	swag init --dir=./internal/warehouse/ --generalInfo=controller.go --output=./api/docs
 
 
 # Goose database migration tool commands

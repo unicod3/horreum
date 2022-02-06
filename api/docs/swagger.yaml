@@ -11,9 +11,16 @@ definitions:
       name:
         type: string
     type: object
-  warehouse.SuccessResponse:
+  warehouse.Warehouse:
     properties:
-      data: {}
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
     type: object
 info:
   contact: {}
@@ -30,7 +37,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/warehouse.SuccessResponse'
+            items:
+              $ref: '#/definitions/warehouse.Warehouse'
+            type: array
       summary: Get all warehouses
       tags:
       - warehouses
@@ -52,7 +61,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/warehouse.SuccessResponse'
+            $ref: '#/definitions/warehouse.Warehouse'
         "400":
           description: Bad Request
           schema:
@@ -75,10 +84,10 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: NoContent
           schema:
-            $ref: '#/definitions/warehouse.SuccessResponse'
+            type: string
         "400":
           description: Bad Request
           schema:
@@ -107,7 +116,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/warehouse.SuccessResponse'
+            $ref: '#/definitions/warehouse.Warehouse'
         "400":
           description: Bad Request
           schema:
@@ -142,7 +151,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/warehouse.SuccessResponse'
+            $ref: '#/definitions/warehouse.Warehouse'
         "400":
           description: Bad Request
           schema:

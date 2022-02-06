@@ -13,8 +13,8 @@ func upCreateWarehousesTable(tx *sql.Tx) error {
 	// This code is executed when the migration is applied.
 	_, err := tx.Exec(`CREATE TABLE warehouses (
     						id bigserial primary key,
-    						created_at timestamp with time zone not null,
-    						updated_at timestamp with time zone not null, 
+    						created_at  timestamp without time zone DEFAULT now() NOT NULL,
+    						updated_at  timestamp without time zone DEFAULT now() NOT NULL, 
     						name varchar(256) not null
 						);`)
 	if err != nil {

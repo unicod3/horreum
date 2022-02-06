@@ -8,7 +8,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
-	_ "github.com/unicod3/horreum/pkg/db/migrations"
+	_ "github.com/unicod3/horreum/pkg/dbclient/migrations"
 )
 
 var (

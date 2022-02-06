@@ -34,7 +34,10 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/warehouse.SuccessResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/warehouse.Warehouse"
+                            }
                         }
                     }
                 }
@@ -67,7 +70,7 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/warehouse.SuccessResponse"
+                            "$ref": "#/definitions/warehouse.Warehouse"
                         }
                     },
                     "400": {
@@ -106,7 +109,7 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/warehouse.SuccessResponse"
+                            "$ref": "#/definitions/warehouse.Warehouse"
                         }
                     },
                     "400": {
@@ -158,7 +161,7 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/warehouse.SuccessResponse"
+                            "$ref": "#/definitions/warehouse.Warehouse"
                         }
                     },
                     "400": {
@@ -198,10 +201,10 @@ const docTemplate_swagger = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "NoContent",
                         "schema": {
-                            "$ref": "#/definitions/warehouse.SuccessResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -240,10 +243,21 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "warehouse.SuccessResponse": {
+        "warehouse.Warehouse": {
             "type": "object",
             "properties": {
-                "data": {}
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
             }
         }
     }
