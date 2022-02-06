@@ -6,6 +6,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "github.com/unicod3/horreum/api/docs"
 	"github.com/unicod3/horreum/internal/order"
+	"github.com/unicod3/horreum/internal/product"
 	"github.com/unicod3/horreum/internal/warehouse"
 	"github.com/unicod3/horreum/pkg/dbclient"
 )
@@ -48,6 +49,9 @@ func (srv *Server) Serve() {
 
 	orderHandler := order.NewHandler(srv.DataStore)
 	orderHandler.RegisterRoutes(router)
+
+	productHandler := product.NewHandler(srv.DataStore)
+	productHandler.RegisterRoutes(router)
 
 	ginRouter.Run(srv.cfg.Addr)
 }

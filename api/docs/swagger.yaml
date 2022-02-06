@@ -56,6 +56,53 @@ definitions:
       warehouse_id:
         type: integer
     type: object
+  product.Article:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      quantity:
+        type: integer
+      sku:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  product.ArticleRequestBody:
+    properties:
+      quantity:
+        type: integer
+      sku:
+        type: string
+    type: object
+  product.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  product.Product:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      price:
+        type: integer
+      sku:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  product.ProductRequestBody:
+    properties:
+      price:
+        type: integer
+      sku:
+        type: string
+    type: object
   warehouse.ErrorResponse:
     properties:
       code:
@@ -82,6 +129,144 @@ definitions:
 info:
   contact: {}
 paths:
+  /articles/:
+    get:
+      consumes:
+      - application/json
+      description: Get all articles
+      operationId: list-articles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/product.Article'
+            type: array
+      summary: Get all articles
+      tags:
+      - articles
+    post:
+      consumes:
+      - application/json
+      description: Create a article with given data
+      operationId: create-article
+      parameters:
+      - description: Article
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/product.ArticleRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/product.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+      summary: Create a article with given data
+      tags:
+      - articles
+  /articles/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a article by id
+      operationId: delete-article
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: NoContent
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+      summary: Delete a article by id
+      tags:
+      - articles
+    get:
+      consumes:
+      - application/json
+      description: Get single article by id
+      operationId: get-article
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/product.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+      summary: Get single article by id
+      tags:
+      - articles
+    put:
+      consumes:
+      - application/json
+      description: Update a article with given data
+      operationId: update-article
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Article
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/product.ArticleRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/product.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+      summary: Update a article with given data
+      tags:
+      - articles
   /orders/:
     get:
       consumes:
@@ -220,6 +405,144 @@ paths:
       summary: Update a order with given data
       tags:
       - orders
+  /products/:
+    get:
+      consumes:
+      - application/json
+      description: Get all products
+      operationId: list-products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/product.Product'
+            type: array
+      summary: Get all products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Create a article with given data
+      operationId: create-article
+      parameters:
+      - description: Product
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/product.ProductRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/product.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+      summary: Create a article with given data
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product by id
+      operationId: delete-product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: NoContent
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+      summary: Delete a product by id
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: Get single product by id
+      operationId: get-product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/product.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+      summary: Get single product by id
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update a product with given data
+      operationId: update-product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Product
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/product.ProductRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/product.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/product.ErrorResponse'
+      summary: Update a product with given data
+      tags:
+      - products
   /warehouses/:
     get:
       consumes:
