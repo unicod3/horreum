@@ -11,37 +11,43 @@ import (
 
 // Config provides the configuration for the API server
 type Config struct {
-	Addr string
+	SwaggerTitle       string
+	SwaggerDescription string
+	BasePath           string
+	Addr               string
 }
 
 // Server contains server details
 type Server struct {
-	cfg *Config
-	DB  *dbclient.Client
+	cfg       *Config
+	DataStore *dbclient.DataStorage
 }
 
 // New returns a new instance of the server
-func New(cfg *Config, db *dbclient.Client) *Server {
+func New(cfg *Config, db *dbclient.DataStorage) *Server {
 	return &Server{
-		cfg: cfg,
-		DB:  db,
+		cfg:       cfg,
+		DataStore: db,
 	}
 }
 
+var ginRouter = gin.Default()
+
 func (srv *Server) Serve() {
+	docs.SwaggerInfo_swagger.Title = srv.cfg.SwaggerTitle
+	docs.SwaggerInfo_swagger.Description = srv.cfg.SwaggerDescription
+	docs.SwaggerInfo_swagger.BasePath = srv.cfg.BasePath
+	docs.SwaggerInfo_swagger.Host = srv.cfg.Addr
 
-	docs.SwaggerInfo_swagger.Title = "Horreum"
-	docs.SwaggerInfo_swagger.Description = "Horreum, is an application to manage products and their stock information."
-	docs.SwaggerInfo_swagger.BasePath = "/api/v1"
-	docs.SwaggerInfo_swagger.Host = "localhost:8080"
+	router := registerGinRouter(srv.cfg.BasePath)
 
-	warehouseHandler := warehouse.NewHandler(srv.DB)
-	r := gin.Default()
-	v1 := r.Group("/api/v1")
-	{
-		warehouseHandler.RegisterRoutes(v1)
-	}
+	warehouseHandler := warehouse.NewHandler(srv.DataStore)
+	warehouseHandler.RegisterRoutes(router)
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	r.Run(srv.cfg.Addr)
+	ginRouter.Run(srv.cfg.Addr)
+}
+
+func registerGinRouter(basePath string) *gin.RouterGroup {
+	ginRouter.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	return ginRouter.Group(basePath)
 }
