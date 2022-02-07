@@ -9,6 +9,7 @@ import (
 	"github.com/unicod3/horreum/internal/product"
 	"github.com/unicod3/horreum/internal/warehouse"
 	"github.com/unicod3/horreum/pkg/dbclient"
+	"github.com/unicod3/horreum/pkg/streamer"
 )
 
 // Config provides the configuration for the API server
@@ -21,15 +22,17 @@ type Config struct {
 
 // Server contains server details
 type Server struct {
-	cfg       *Config
-	DataStore *dbclient.DataStorage
+	cfg           *Config
+	DataStore     *dbclient.DataStorage
+	StreamService *streamer.Stream
 }
 
 // New returns a new instance of the server
-func New(cfg *Config, db *dbclient.DataStorage) *Server {
+func New(cfg *Config, db *dbclient.DataStorage, streamService *streamer.Stream) *Server {
 	return &Server{
-		cfg:       cfg,
-		DataStore: db,
+		cfg:           cfg,
+		DataStore:     db,
+		StreamService: streamService,
 	}
 }
 
@@ -47,8 +50,9 @@ func (srv *Server) Serve() {
 	warehouseHandler := warehouse.NewHandler(srv.DataStore)
 	warehouseHandler.RegisterRoutes(router)
 
-	orderHandler := order.NewHandler(srv.DataStore)
-	orderHandler.RegisterRoutes(router)
+	orderHandler := order.NewHandler(srv.DataStore, streamer.NewChannel())
+	orderHandler.RegisterHTTPRoutes(router)
+	orderHandler.RegisterEventHandlers(srv.StreamService)
 
 	productHandler := product.NewHandler(srv.DataStore)
 	productHandler.RegisterRoutes(router)

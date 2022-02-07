@@ -2,6 +2,7 @@ package order
 
 import (
 	"github.com/unicod3/horreum/pkg/dbclient"
+	"github.com/unicod3/horreum/pkg/streamer"
 	"time"
 )
 
@@ -16,14 +17,16 @@ type OrderRepository interface {
 
 // Handler holds services that are exposed
 type Handler struct {
-	OrderService OrderRepository
+	OrderService *OrderService
 }
 
 // NewHandler returns a new Handler
-func NewHandler(client *dbclient.DataStorage) *Handler {
+func NewHandler(client *dbclient.DataStorage, streamChannel streamer.Channel) *Handler {
 	return &Handler{
 		OrderService: &OrderService{
-			(*client).NewDataCollection("orders"),
+			dataTable:     (*client).NewDataCollection("orders"),
+			StreamChannel: streamChannel,
+			StreamTopic:   "orders",
 		},
 	}
 }
@@ -88,7 +91,9 @@ func (o *Order) deleteLines(dataTable dbclient.DataTable) error {
 // OrderService holds information about the datatable
 // and implements OrderService
 type OrderService struct {
-	dataTable dbclient.DataTable
+	dataTable     dbclient.DataTable
+	StreamChannel streamer.Channel
+	StreamTopic   string
 }
 
 // GetAll returns all the records
@@ -125,6 +130,17 @@ func (service *OrderService) Create(o *Order) error {
 	if err != nil {
 		return err
 	}
+
+	// Publish an event on the channel
+	msg, err := streamer.NewMessage(&streamer.Message{
+		EventName: "ORDER_CREATED",
+		Data:      o,
+	})
+	if err != nil {
+		return err
+	}
+	streamer.PublishMessage(service.StreamChannel, service.StreamTopic, msg)
+
 	return nil
 }
 
