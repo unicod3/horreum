@@ -12,11 +12,15 @@ import (
 // @ID list-products
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} Product
+// @Success 200 {array} ProductArticle
 // @Router /products/ [get]
 func (h *Handler) ListProduct(g *gin.Context) {
 	products, err := h.ProductService.GetAll()
 	if err != nil {
+		g.JSON(http.StatusInternalServerError, ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 	g.JSON(http.StatusOK, products)
@@ -59,7 +63,7 @@ func (h *Handler) GetProduct(g *gin.Context) {
 // @Tags products
 // @Summary Create a article with given data
 // @Description Create a article with given data
-// @ID create-article
+// @ID create-product
 // @Accept  json
 // @Produce  json
 // @Param article body ProductRequestBody true "Product"

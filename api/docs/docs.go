@@ -448,7 +448,7 @@ const docTemplate_swagger = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/product.Product"
+                                "$ref": "#/definitions/product.ProductArticle"
                             }
                         }
                     }
@@ -466,7 +466,7 @@ const docTemplate_swagger = `{
                     "products"
                 ],
                 "summary": "Create a article with given data",
-                "operationId": "create-article",
+                "operationId": "create-product",
                 "parameters": [
                     {
                         "description": "Product",
@@ -975,6 +975,12 @@ const docTemplate_swagger = `{
         "product.Product": {
             "type": "object",
             "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/product.Article"
+                    }
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -982,6 +988,29 @@ const docTemplate_swagger = `{
                     "type": "integer"
                 },
                 "price": {
+                    "type": "integer"
+                },
+                "sku": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "product.ProductArticle": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "productID": {
+                    "type": "integer"
+                },
+                "quantity": {
                     "type": "integer"
                 },
                 "sku": {

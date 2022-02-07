@@ -194,6 +194,20 @@ func (_m *DataTable) InsertReturning(_a0 interface{}) error {
 	return r0
 }
 
+// LoadMany2Many provides a mock function with given fields: columns, from, join, on, condition, dataAddress
+func (_m *DataTable) LoadMany2Many(columns string, from string, join string, on string, condition db.Cond, dataAddress interface{}) error {
+	ret := _m.Called(columns, from, join, on, condition, dataAddress)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string, string, string, db.Cond, interface{}) error); ok {
+		r0 = rf(columns, from, join, on, condition, dataAddress)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Name provides a mock function with given fields:
 func (_m *DataTable) Name() string {
 	ret := _m.Called()

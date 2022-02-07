@@ -30,6 +30,7 @@ type DataTable interface {
 	CreateRelated(tableName string, dataAddress interface{}) error
 	Delete(cond Condition) error
 	DeleteRelated(tableName string, condition Condition) error
+	LoadMany2Many(columns, from, join, on string, condition Condition, dataAddress interface{}) error
 }
 
 // Condition is map to define query conditions
@@ -106,4 +107,12 @@ func (c *DataCollection) CreateRelated(tableName string, dataAddress interface{}
 	return c.Session().
 		Collection(tableName).
 		InsertReturning(dataAddress)
+}
+
+func (c *DataCollection) LoadMany2Many(columns, from, join, on string, condition Condition, dataAddress interface{}) error {
+	return c.Session().SQL().
+		Select(db.Raw(columns)).From(from).
+		Join(join).On(on).
+		Where(condition).
+		All(dataAddress)
 }

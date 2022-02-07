@@ -85,11 +85,30 @@ definitions:
     type: object
   product.Product:
     properties:
+      articles:
+        items:
+          $ref: '#/definitions/product.Article'
+        type: array
       created_at:
         type: string
       id:
         type: integer
       price:
+        type: integer
+      sku:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  product.ProductArticle:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      productID:
+        type: integer
+      quantity:
         type: integer
       sku:
         type: string
@@ -418,7 +437,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/product.Product'
+              $ref: '#/definitions/product.ProductArticle'
             type: array
       summary: Get all products
       tags:
@@ -427,7 +446,7 @@ paths:
       consumes:
       - application/json
       description: Create a article with given data
-      operationId: create-article
+      operationId: create-product
       parameters:
       - description: Product
         in: body
