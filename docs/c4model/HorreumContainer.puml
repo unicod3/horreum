@@ -8,23 +8,26 @@ ContainerDb_Ext(RDMS, "Relational Database", "Postgress")
 AddElementTag("internal", $shape=EightSidedShape(), $bgColor="CornflowerBlue", $fontColor="white")
 
 System_Boundary(Horreum, "Horreum"){
-    Container(APIPackage, "API Package", "OPEN API compatible REST API Implementation")
+    Container(APIPackage, "API Package", "GIN", "OPEN API compatible REST API Implementation")
     Boundary(Internal, "Internal layer that contains business logic"){
-        Container(Warehouse, "Warehouse Package", "Contains warehouse related business logic", $tags="internal")
-        Container(Product, "Product Package", "Contains product and inventory related business logic", $tags="internal")
-        Container(Order, "Order Package", "Contains order related business logic", $tags="internal")
+        Container(Warehouse, "Warehouse Package", "INTERNAL", "Contains warehouse related business logic", $tags="internal")
+        Container(Product, "Product Package", "INTERNAL", "Contains product and inventory related business logic", $tags="internal")
+        Container(Order, "Order Package", "INTERNAL", "Contains order related business logic", $tags="internal")
     }
     Rel(APIPackage, Warehouse, "Uses")
     Rel(APIPackage, Product, "Uses")
     Rel(APIPackage, Order, "Uses")
 
     Boundary(Pkg, "Pkg layer"){
-        Container(DBPackage, "Database Package", "Abstracts away database implementation details")
+        Container(DBPackage, "Database Package", "UPPER/DB", "Abstracts away database implementation details")
+        Container(Streamer, "Streamer Package", "WATERMILL", "Abstracts away the WATERMILL library and provides an api to stream events to topics internally   aka:pub/sub")
+        Rel_L(Streamer, DBPackage, "Uses")
 
     }
     Rel(Warehouse, DBPackage, "Uses")
     Rel(Product, DBPackage, "Uses")
     Rel(Order, DBPackage, "Uses")
+    Rel(Order, Streamer, "PushMessage")
 
 
     Rel(DBPackage, RDMS, "Uses")
