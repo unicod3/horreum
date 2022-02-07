@@ -933,17 +933,23 @@ const docTemplate_swagger = `{
         "product.Article": {
             "type": "object",
             "properties": {
+                "amount_of": {
+                    "type": "integer"
+                },
+                "available_inventory": {
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "quantity": {
-                    "type": "integer"
-                },
-                "sku": {
+                "name": {
                     "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
                 },
                 "updated_at": {
                     "type": "string"
@@ -953,11 +959,11 @@ const docTemplate_swagger = `{
         "product.ArticleRequestBody": {
             "type": "object",
             "properties": {
-                "quantity": {
-                    "type": "integer"
-                },
-                "sku": {
+                "name": {
                     "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
                 }
             }
         },
@@ -987,11 +993,14 @@ const docTemplate_swagger = `{
                 "id": {
                     "type": "integer"
                 },
+                "name": {
+                    "type": "string"
+                },
                 "price": {
                     "type": "integer"
                 },
-                "sku": {
-                    "type": "string"
+                "sellable_inventory": {
+                    "type": "integer"
                 },
                 "updated_at": {
                     "type": "string"
@@ -1001,20 +1010,26 @@ const docTemplate_swagger = `{
         "product.ProductArticle": {
             "type": "object",
             "properties": {
+                "amount_of": {
+                    "type": "integer"
+                },
+                "available_inventory": {
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
+                "name": {
+                    "type": "string"
+                },
                 "productID": {
                     "type": "integer"
                 },
-                "quantity": {
+                "stock": {
                     "type": "integer"
-                },
-                "sku": {
-                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
@@ -1024,11 +1039,25 @@ const docTemplate_swagger = `{
         "product.ProductRequestBody": {
             "type": "object",
             "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "amount_of": {
+                                "type": "integer"
+                            },
+                            "id": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
                 "price": {
                     "type": "integer"
-                },
-                "sku": {
-                    "type": "string"
                 }
             }
         },

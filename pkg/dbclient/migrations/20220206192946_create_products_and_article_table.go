@@ -15,7 +15,7 @@ func upCreateProductsAndArticleTable(tx *sql.Tx) error {
     						id bigserial primary key,
     						created_at  timestamp without time zone DEFAULT now() NOT NULL,
     						updated_at  timestamp without time zone DEFAULT now() NOT NULL, 
-    						sku varchar(256) not null,
+    						name varchar(256) not null,
     						price bigint  not null
 						);`)
 	if err != nil {
@@ -25,8 +25,8 @@ func upCreateProductsAndArticleTable(tx *sql.Tx) error {
     						id bigserial primary key,
     						created_at  timestamp without time zone DEFAULT now() NOT NULL,
     						updated_at  timestamp without time zone DEFAULT now() NOT NULL, 
-    						sku varchar(256) not null,
-    						quantity bigint  not null
+    						name varchar(256) not null,
+    						stock bigint  not null
 						);`)
 	if err != nil {
 		return err
@@ -36,6 +36,7 @@ func upCreateProductsAndArticleTable(tx *sql.Tx) error {
     						id bigserial primary key,
     						product_id bigint not null,
     						article_id bigint not null,
+    						amount_of bigint not null,
     						CONSTRAINT fk_products
 									FOREIGN KEY(product_id) 
 									REFERENCES products(id)

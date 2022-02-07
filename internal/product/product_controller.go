@@ -81,7 +81,7 @@ func (h *Handler) CreateProduct(g *gin.Context) {
 		return
 	}
 
-	err := h.ProductService.Create(&product)
+	p, err := h.ProductService.Create(&product)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -90,7 +90,7 @@ func (h *Handler) CreateProduct(g *gin.Context) {
 		return
 	}
 
-	g.JSON(http.StatusCreated, product)
+	g.JSON(http.StatusCreated, p)
 }
 
 // UpdateProduct example
@@ -125,7 +125,7 @@ func (h *Handler) UpdateProduct(g *gin.Context) {
 		return
 	}
 
-	err := h.ProductService.Update(&product)
+	p, err := h.ProductService.Update(&product)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -134,7 +134,7 @@ func (h *Handler) UpdateProduct(g *gin.Context) {
 		return
 	}
 
-	g.JSON(http.StatusOK, product)
+	g.JSON(http.StatusOK, p)
 }
 
 // DeleteProduct example

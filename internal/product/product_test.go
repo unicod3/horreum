@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/unicod3/horreum/pkg/dbclient"
 	"github.com/unicod3/horreum/pkg/dbclient/mocks"
+	"github.com/upper/db/v4"
 	"testing"
 )
 
@@ -22,7 +23,7 @@ func TestProductService_GetAll(t *testing.T) {
 	}
 
 	products := Products{
-		Product{ID: 1, SKU: "test", Price: 1025},
+		Product{ID: 1, Name: "test", Price: 1025},
 	}
 
 	var w Products
@@ -30,7 +31,7 @@ func TestProductService_GetAll(t *testing.T) {
 		w = products
 	}).Return(nil).Once()
 	var productArticles []ProductArticle
-	dataTable.On("LoadMany2Many", "pa.product_id as product_id, a.*",
+	dataTable.On("LoadMany2Many", "pa.product_id as product_id, a.*, pa.amount_of as amount_of",
 		"product_articles pa",
 		"articles a",
 		"a.id = pa.article_id",
@@ -48,14 +49,14 @@ func TestProductService_GetById(t *testing.T) {
 		dataTable: &dataTable,
 	}
 
-	product := Product{ID: 1, SKU: "test", Price: 1025}
+	product := Product{ID: 1, Name: "test", Price: 1025}
 
 	var w Product
 	dataTable.On("FindOne", dbclient.Condition{"id": product.ID}, &w).Run(func(args mock.Arguments) {
 		w = product
 	}).Return(nil).Once()
 	var productArticles []Article
-	dataTable.On("LoadMany2Many", "a.*",
+	dataTable.On("LoadMany2Many", "a.*, pa.amount_of as amount_of",
 		"product_articles pa",
 		"articles a",
 		"a.id = pa.article_id",
@@ -74,15 +75,39 @@ func TestProductService_Create(t *testing.T) {
 		dataTable: &dataTable,
 	}
 
-	product := Product{ID: 1, SKU: "test"}
+	productID := uint64(1)
+	product := Product{
+		Name:  "test",
+		Price: 1000,
+	}
 
-	var w Product
-	dataTable.On("InsertReturning", &product).Run(func(args mock.Arguments) {
-		w = product
-	}).Return(nil).Once()
-	err := productService.Create(&product)
+	dataTable.On("InsertReturning", &product).
+		Return(func(data interface{}) error {
+			(&product).ID = productID
+			return nil
+		}).Once()
+	dataTable.On("DeleteRelated", "product_articles", dbclient.Condition{"product_id": productID}).
+		Return(nil).Once()
+
+	result := Product{}
+	dataTable.On("FindOne", dbclient.Condition{"id": productID}, &result).
+		Return(func(cond db.Cond, dataAddress interface{}) error {
+			(&product).ID = productID
+			(&product).Name = product.Name
+			(&product).Price = product.Price
+			return nil
+		}).Once()
+	dataTable.On("LoadMany2Many",
+		"a.*, pa.amount_of as amount_of",
+		"product_articles pa",
+		"articles a",
+		"a.id = pa.article_id",
+		dbclient.Condition{"pa.product_id": product.ID},
+		new([]Article)).
+		Return(nil).Once()
+	p, err := productService.Create(&product)
 	assert.Nil(err)
-	assert.Equal(product, w)
+	assert.Equal(result, *p)
 }
 
 func TestProductService_Update(t *testing.T) {
@@ -92,16 +117,39 @@ func TestProductService_Update(t *testing.T) {
 	productService := &ProductService{
 		dataTable: &dataTable,
 	}
+	productID := uint64(1)
+	product := Product{
+		Name:  "test",
+		Price: 10,
+	}
 
-	product := Product{ID: 1, SKU: "test"}
+	dataTable.On("UpdateReturning", &product).Return(nil).
+		Return(func(data interface{}) error {
+			(&product).ID = productID
+			return nil
+		}).Once()
+	dataTable.On("DeleteRelated", "product_articles", dbclient.Condition{"product_id": productID}).
+		Return(nil).Once()
 
-	var w Product
-	dataTable.On("UpdateReturning", &product).Run(func(args mock.Arguments) {
-		w = product
-	}).Return(nil).Once()
-	err := productService.Update(&product)
+	result := Product{}
+	dataTable.On("FindOne", dbclient.Condition{"id": productID}, &result).
+		Return(func(cond db.Cond, dataAddress interface{}) error {
+			(&product).ID = productID
+			(&product).Name = product.Name
+			(&product).Price = product.Price
+			return nil
+		}).Once()
+	dataTable.On("LoadMany2Many",
+		"a.*, pa.amount_of as amount_of",
+		"product_articles pa",
+		"articles a",
+		"a.id = pa.article_id",
+		dbclient.Condition{"pa.product_id": product.ID},
+		new([]Article)).
+		Return(nil).Once()
+	p, err := productService.Update(&product)
 	assert.Nil(err)
-	assert.Equal(product, w)
+	assert.Equal(result, *p)
 }
 
 func TestProductService_Delete(t *testing.T) {
@@ -112,7 +160,7 @@ func TestProductService_Delete(t *testing.T) {
 		dataTable: &dataTable,
 	}
 
-	product := Product{ID: 1, SKU: "test"}
+	product := Product{ID: 1, Name: "test"}
 	dataTable.On("Delete", dbclient.Condition{"id": product.ID}).Return(nil).Once()
 	err := productService.Delete(&product)
 	assert.Nil(err)

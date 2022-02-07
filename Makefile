@@ -5,6 +5,9 @@ tidy:
 	go mod tidy
 	go mod vendor
 
+test:
+	go test ./...
+
 
 # OPEN API swagger generator
 # This command will generate docs under the api/docs folder

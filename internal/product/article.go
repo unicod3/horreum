@@ -2,6 +2,7 @@ package product
 
 import (
 	"github.com/unicod3/horreum/pkg/dbclient"
+	"math"
 	"time"
 )
 
@@ -16,17 +17,27 @@ type ArticleRepository interface {
 
 // Article represents a record from articles table
 type Article struct {
-	ID        uint64    `json:"id" uri:"id" db:"id,omitempty"`
-	CreatedAt time.Time `json:"created_at,omitempty" db:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty" db:"updated_at,omitempty"`
-	SKU       string    `json:"sku" db:"sku"`
-	Quantity  int64     `json:"quantity" db:"quantity"`
+	ID                 uint64    `json:"id" uri:"id" db:"id,omitempty"`
+	CreatedAt          time.Time `json:"created_at,omitempty" db:"created_at,omitempty"`
+	UpdatedAt          time.Time `json:"updated_at,omitempty" db:"updated_at,omitempty"`
+	Name               string    `json:"name" db:"name"`
+	Stock              int64     `json:"stock" db:"stock"`
+	AmountOf           int64     `json:"amount_of,omitempty" db:"amount_of,omitempty"`
+	AvailableInventory int64     `json:"available_inventory,omitempty" db:"-"`
+}
+
+func (a *Article) CalculateAvailableInventory() {
+	if a.AmountOf == 0 {
+		a.AvailableInventory = 0
+		return
+	}
+	a.AvailableInventory = int64(math.Floor(float64(a.Stock / a.AmountOf)))
 }
 
 // ArticleRequestBody represents the data type that needs to be sent over request
 type ArticleRequestBody struct {
-	SKU      string `json:"sku"`
-	Quantity int64  `json:"quantity"`
+	Name  string `json:"name" db:"name"`
+	Stock int64  `json:"stock" db:"stock"`
 }
 
 // ArticleService holds information about the datatable

@@ -22,7 +22,7 @@ func TestArticleService_GetAll(t *testing.T) {
 	}
 
 	articles := []Article{
-		Article{ID: 1, SKU: "test"},
+		Article{ID: 1, Name: "test"},
 	}
 
 	var w []Article
@@ -42,7 +42,7 @@ func TestArticleService_GetById(t *testing.T) {
 		dataTable: &dataTable,
 	}
 
-	article := Article{ID: 1, SKU: "test"}
+	article := Article{ID: 1, Name: "test"}
 
 	var w Article
 	dataTable.On("FindOne", dbclient.Condition{"id": article.ID}, &w).Run(func(args mock.Arguments) {
@@ -61,7 +61,7 @@ func TestArticleService_Create(t *testing.T) {
 		dataTable: &dataTable,
 	}
 
-	article := Article{ID: 1, SKU: "test"}
+	article := Article{ID: 1, Name: "test"}
 
 	var w Article
 	dataTable.On("InsertReturning", &article).Run(func(args mock.Arguments) {
@@ -80,7 +80,7 @@ func TestArticleService_Update(t *testing.T) {
 		dataTable: &dataTable,
 	}
 
-	article := Article{ID: 1, SKU: "test"}
+	article := Article{ID: 1, Name: "test"}
 
 	var w Article
 	dataTable.On("UpdateReturning", &article).Run(func(args mock.Arguments) {
@@ -99,7 +99,7 @@ func TestArticleService_Delete(t *testing.T) {
 		dataTable: &dataTable,
 	}
 
-	article := Article{ID: 1, SKU: "test"}
+	article := Article{ID: 1, Name: "test"}
 	dataTable.On("Delete", dbclient.Condition{"id": article.ID}).Return(nil).Once()
 	err := articleService.Delete(&article)
 	assert.Nil(err)

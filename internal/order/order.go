@@ -80,6 +80,7 @@ func (o *Order) createLines(dataTable dbclient.DataTable) error {
 	}
 	return nil
 }
+
 func (o *Order) deleteLines(dataTable dbclient.DataTable) error {
 	return dataTable.DeleteRelated("order_lines", dbclient.Condition{"order_id": o.ID})
 }
