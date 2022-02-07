@@ -8,6 +8,34 @@ import (
 	"testing"
 )
 
+func TestArticle_CalculateAvailableInventory(t *testing.T) {
+	assert := assert.New(t)
+
+	t.Run("Test can return zero for empty article", func(t *testing.T) {
+		article := &Article{}
+		article.CalculateAvailableInventory()
+		assert.Equal(int64(0), article.AvailableInventory)
+	})
+
+	t.Run("Test can handle zero division", func(t *testing.T) {
+		article := &Article{
+			Stock:    10,
+			AmountOf: 0,
+		}
+		article.CalculateAvailableInventory()
+		assert.Equal(int64(0), article.AvailableInventory)
+	})
+
+	t.Run("Test can divide", func(t *testing.T) {
+		article := &Article{
+			Stock:    10,
+			AmountOf: 5,
+		}
+		article.CalculateAvailableInventory()
+		assert.Equal(int64(2), article.AvailableInventory)
+	})
+}
+
 func TestArticleServiceImplementsArticleRepositoryInterface(t *testing.T) {
 	assert := assert.New(t)
 	assert.Implements((*ArticleRepository)(nil), new(ArticleService))

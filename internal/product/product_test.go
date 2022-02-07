@@ -9,6 +9,35 @@ import (
 	"testing"
 )
 
+func TestProduct_CalculateSellableInventory(t *testing.T) {
+	assert := assert.New(t)
+
+	t.Run("Test can return zero for empty article", func(t *testing.T) {
+		product := &Product{}
+		product.CalculateSellableInventory()
+		assert.Equal(int64(0), product.SellableInventory)
+	})
+
+	t.Run("Test can get the minimum article inventory", func(t *testing.T) {
+		product := &Product{
+			Articles: []Article{
+				{
+					AvailableInventory: -4,
+				},
+				{
+					AvailableInventory: 5,
+				},
+				{
+					AvailableInventory: 10,
+				},
+			},
+		}
+
+		product.CalculateSellableInventory()
+		assert.Equal(int64(-4), product.SellableInventory)
+	})
+}
+
 func TestProductServiceImplementsProductRepositoryInterface(t *testing.T) {
 	assert := assert.New(t)
 	assert.Implements((*ProductRepository)(nil), new(ProductService))
