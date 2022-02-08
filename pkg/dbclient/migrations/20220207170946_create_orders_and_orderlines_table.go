@@ -29,15 +29,19 @@ func upCreateOrdersAndOrderlinesTable(tx *sql.Tx) error {
 	_, err = tx.Exec(`CREATE TABLE order_lines (
     						id bigserial primary key,
     						order_id bigint not null,
+    						product_id bigint not null,
     						created_at  timestamp without time zone DEFAULT now() NOT NULL,
     						updated_at  timestamp without time zone DEFAULT now() NOT NULL, 
-    						sku varchar(256) not null,
     						quantity bigint not null,
     						unit_cost bigint  not null,
-    						
+    						    						
     						   CONSTRAINT fk_order
 									FOREIGN KEY(order_id) 
 									REFERENCES orders(id)
+									ON DELETE CASCADE,
+    						   CONSTRAINT fk_product
+									FOREIGN KEY(product_id) 
+									REFERENCES products(id)
 									ON DELETE CASCADE
 						);`)
 	if err != nil {

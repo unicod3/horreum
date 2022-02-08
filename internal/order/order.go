@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+const (
+	OrderCreated string = "OrderCreated"
+	OrderUpdated        = "OrderUpdated"
+	OrderDeleted        = "OrderDeleted"
+)
+
 // OrderRepository serves as a contract over OrderService
 type OrderRepository interface {
 	GetAll() ([]Order, error)
@@ -13,22 +19,6 @@ type OrderRepository interface {
 	Create(o *Order) error
 	Update(o *Order) error
 	Delete(o *Order) error
-}
-
-// Handler holds services that are exposed
-type Handler struct {
-	OrderService *OrderService
-}
-
-// NewHandler returns a new Handler
-func NewHandler(client *dbclient.DataStorage, streamChannel streamer.Channel) *Handler {
-	return &Handler{
-		OrderService: &OrderService{
-			DataTable:     (*client).NewDataCollection("orders"),
-			StreamChannel: streamChannel,
-			StreamTopic:   "orders",
-		},
-	}
 }
 
 // Order represents a record from orders table
@@ -45,9 +35,9 @@ type Order struct {
 type OrderLine struct {
 	ID        uint64    `json:"id" db:"id,omitempty"`
 	OrderID   uint64    `json:"-" db:"order_id,omitempty"`
+	ProductID uint64    `json:"product_id" db:"product_id,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty" db:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty" db:"updated_at,omitempty"`
-	SKU       string    `json:"sku" db:"sku"`
 	Quantity  uint64    `json:"quantity" db:"quantity"`
 	UnitCost  uint64    `json:"unit_cost" db:"unit_cost"`
 }
@@ -63,9 +53,9 @@ type RequestBody struct {
 	Customer    string `json:"customer"`
 	WarehouseID uint64 `json:"warehouse_id"`
 	Lines       []struct {
-		SKU      string `json:"sku"`
-		Quantity uint64 `json:"quantity"`
-		UnitCost uint64 `json:"unit_cost"`
+		ProductID uint64 `json:"product_id"`
+		Quantity  uint64 `json:"quantity"`
+		UnitCost  uint64 `json:"unit_cost"`
 	} `json:"lines"`
 }
 
@@ -132,15 +122,10 @@ func (service *OrderService) Create(o *Order) error {
 	}
 
 	// Publish an event on the channel
-	msg, err := streamer.NewMessage(&streamer.Message{
-		EventName: "ORDER_CREATED",
-		Data:      o,
-	})
+	err = service.PublishEvent(OrderCreated, o)
 	if err != nil {
 		return err
 	}
-	streamer.PublishMessage(service.StreamChannel, service.StreamTopic, msg)
-
 	return nil
 }
 
@@ -159,6 +144,12 @@ func (service *OrderService) Update(o *Order) error {
 	if err != nil {
 		return err
 	}
+
+	// Publish an event on the channel
+	err = service.PublishEvent(OrderUpdated, o)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -167,5 +158,24 @@ func (service *OrderService) Delete(o *Order) error {
 	if err := service.DataTable.Delete(dbclient.Condition{"id": o.ID}); err != nil {
 		return err
 	}
+
+	// Publish an event on the channel
+	err := service.PublishEvent(OrderDeleted, o)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (service *OrderService) PublishEvent(event string, order *Order) error {
+	msg, err := streamer.NewMessage(&streamer.Message{
+		EventName: event,
+		Data:      order,
+	})
+	if err != nil {
+		return err
+	}
+	streamer.PublishMessage(service.StreamChannel, service.StreamTopic, msg)
 	return nil
 }

@@ -2,6 +2,7 @@ package streamer
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
@@ -36,7 +37,9 @@ func NewStreamer() *Stream {
 var logger = watermill.NewStdLogger(false, false)
 
 func NewRouter() *WaterMillRouter {
-	router, err := message.NewRouter(message.RouterConfig{}, logger)
+	router, err := message.NewRouter(message.RouterConfig{
+		CloseTimeout: time.Hour,
+	}, logger)
 	if err != nil {
 		panic(err)
 	}
@@ -75,6 +78,7 @@ func NewChannel() Channel {
 }
 
 func (s *Stream) RegisterHandler(channel Channel, topicName string, handlerFunc message.NoPublishHandlerFunc) {
+	fmt.Println(topicName)
 	s.Router.AddNoPublisherHandler(
 		topicName+"_"+time.Now().UTC().Format(time.RFC3339),
 		topicName,

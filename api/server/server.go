@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -46,15 +47,17 @@ func (srv *Server) Serve() error {
 
 	// Register all the internal services
 	handler := NewHandler(srv.DataStore, streamer.NewChannel())
+	handler.RegisterEventHandlers(srv.StreamService)
 
 	handler.OrderService.RegisterHTTPRoutes(router)
-	handler.OrderService.RegisterEventHandlers(srv.StreamService)
-
 	handler.WarehouseService.RegisterHTTPRoutes(router)
-
 	handler.ArticleService.RegisterHTTPRoutes(router)
-
 	handler.ProductService.RegisterHTTPRoutes(router)
+
+	// Ideally this should live in its own package
+	// with proper error handler under the cmd/ folder
+	// Just left here for the demo purposes
+	go srv.StreamService.Router.Run(context.Background())
 
 	return ginRouter.Run(srv.cfg.Addr)
 }

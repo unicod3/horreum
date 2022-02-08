@@ -40,6 +40,44 @@ func (p *Product) CalculateSellableInventory() {
 	p.SellableInventory = minInventoryOfArticles
 }
 
+func (p *Product) IncreaseStockBy(articleService *ArticleService, quantity int64) error {
+	if quantity == 0 {
+		return nil
+	}
+
+	for _, article := range p.Articles {
+		decreaseAmount := article.AmountOf * quantity
+		newStock := article.Stock + decreaseAmount
+		err := articleService.Update(&Article{
+			ID:    article.ID,
+			Stock: newStock,
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (p *Product) DecreaseStockBy(articleService *ArticleService, quantity int64) error {
+	if quantity == 0 {
+		return nil
+	}
+
+	for _, article := range p.Articles {
+		decreaseAmount := article.AmountOf * quantity
+		newStock := article.Stock - decreaseAmount
+		err := articleService.Update(&Article{
+			ID:    article.ID,
+			Stock: newStock,
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type ProductArticleRelation struct {
 	ProductID uint64 `db:"product_id"`
 	ArticleID uint64 `db:"article_id"`

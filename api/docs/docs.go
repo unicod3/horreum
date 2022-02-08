@@ -888,11 +888,11 @@ const docTemplate_swagger = `{
                 "id": {
                     "type": "integer"
                 },
-                "quantity": {
+                "product_id": {
                     "type": "integer"
                 },
-                "sku": {
-                    "type": "string"
+                "quantity": {
+                    "type": "integer"
                 },
                 "unit_cost": {
                     "type": "integer"
@@ -913,11 +913,11 @@ const docTemplate_swagger = `{
                     "items": {
                         "type": "object",
                         "properties": {
-                            "quantity": {
+                            "product_id": {
                                 "type": "integer"
                             },
-                            "sku": {
-                                "type": "string"
+                            "quantity": {
+                                "type": "integer"
                             },
                             "unit_cost": {
                                 "type": "integer"

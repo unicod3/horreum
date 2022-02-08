@@ -12,7 +12,7 @@ test:
 # OPEN API swagger generator
 # This command will generate docs under the api/docs folder
 swag:
-	swag init --parseInternal=true --dir=./internal/ --generalInfo=order/controller.go --output=./api/docs
+	swag init --parseInternal=true --dir=./internal/ --generalInfo=order/controllers.go --output=./api/docs
 
 
 # Goose database migration tool commands

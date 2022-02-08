@@ -29,10 +29,10 @@ definitions:
         type: string
       id:
         type: integer
+      product_id:
+        type: integer
       quantity:
         type: integer
-      sku:
-        type: string
       unit_cost:
         type: integer
       updated_at:
@@ -45,10 +45,10 @@ definitions:
       lines:
         items:
           properties:
+            product_id:
+              type: integer
             quantity:
               type: integer
-            sku:
-              type: string
             unit_cost:
               type: integer
           type: object

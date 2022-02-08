@@ -876,11 +876,11 @@
                 "id": {
                     "type": "integer"
                 },
-                "quantity": {
+                "product_id": {
                     "type": "integer"
                 },
-                "sku": {
-                    "type": "string"
+                "quantity": {
+                    "type": "integer"
                 },
                 "unit_cost": {
                     "type": "integer"
@@ -901,11 +901,11 @@
                     "items": {
                         "type": "object",
                         "properties": {
-                            "quantity": {
+                            "product_id": {
                                 "type": "integer"
                             },
-                            "sku": {
-                                "type": "string"
+                            "quantity": {
+                                "type": "integer"
                             },
                             "unit_cost": {
                                 "type": "integer"

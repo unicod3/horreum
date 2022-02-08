@@ -21,7 +21,7 @@ type Article struct {
 	ID                 uint64    `json:"id" uri:"id" db:"id,omitempty"`
 	CreatedAt          time.Time `json:"created_at,omitempty" db:"created_at,omitempty"`
 	UpdatedAt          time.Time `json:"updated_at,omitempty" db:"updated_at,omitempty"`
-	Name               string    `json:"name" db:"name"`
+	Name               string    `json:"name" db:"name,omitempty"`
 	Stock              int64     `json:"stock" db:"stock"`
 	AmountOf           int64     `json:"amount_of,omitempty" db:"amount_of,omitempty"`
 	AvailableInventory int64     `json:"available_inventory,omitempty" db:"-"`
