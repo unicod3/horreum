@@ -25,7 +25,8 @@ func main() {
 		os.Getenv("DATABASE_PASS"))
 
 	config := &server.Config{
-		Addr:               "localhost:8080",
+		Addr:               ":8080",
+		SwaggerURL:         "localhost:8080",
 		BasePath:           "/api/v1",
 		SwaggerTitle:       "Horreum",
 		SwaggerDescription: "Horreum, is an application to manage products and their stock information.",

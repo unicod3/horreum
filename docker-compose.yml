@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  ps:
+    container_name: db
+    image: postgres:12.4-alpine
+    command: -p ${DATABASE_PORT}
+    volumes:
+      - psdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASS}
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+  app:
+    container_name: horreum
+    image: horreum-dev
+    build:
+      context: .
+    volumes:
+      - .:/app
+    depends_on:
+      - ps
+    ports:
+      - 8080:8080
+
+
+volumes:
+  psdata:
+    driver: local
+
+networks:
+  default:

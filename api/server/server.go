@@ -13,6 +13,7 @@ import (
 // Config provides the configuration for the API server
 type Config struct {
 	SwaggerTitle       string
+	SwaggerURL         string
 	SwaggerDescription string
 	BasePath           string
 	Addr               string
@@ -41,7 +42,7 @@ func (srv *Server) Serve() error {
 	docs.SwaggerInfo_swagger.Title = srv.cfg.SwaggerTitle
 	docs.SwaggerInfo_swagger.Description = srv.cfg.SwaggerDescription
 	docs.SwaggerInfo_swagger.BasePath = srv.cfg.BasePath
-	docs.SwaggerInfo_swagger.Host = srv.cfg.Addr
+	docs.SwaggerInfo_swagger.Host = srv.cfg.SwaggerURL
 
 	router := registerGinRouter(srv.cfg.BasePath)
 

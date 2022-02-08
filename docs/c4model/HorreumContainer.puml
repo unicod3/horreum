@@ -12,10 +12,12 @@ System_Boundary(Horreum, "Horreum"){
     Boundary(Internal, "Internal layer that contains business logic"){
         Container(Warehouse, "Warehouse Package", "INTERNAL", "Contains warehouse related business logic", $tags="internal")
         Container(Product, "Product Package", "INTERNAL", "Contains product and inventory related business logic", $tags="internal")
+        Container(Article, "Article Package", "INTERNAL", "Contains article related business logic", $tags="internal")
         Container(Order, "Order Package", "INTERNAL", "Contains order related business logic", $tags="internal")
     }
     Rel(APIPackage, Warehouse, "Uses")
     Rel(APIPackage, Product, "Uses")
+    Rel(APIPackage, Article, "Uses")
     Rel(APIPackage, Order, "Uses")
 
     Boundary(Pkg, "Pkg layer"){
@@ -26,6 +28,7 @@ System_Boundary(Horreum, "Horreum"){
     }
     Rel(Warehouse, DBPackage, "Uses")
     Rel(Product, DBPackage, "Uses")
+    Rel(Article, DBPackage, "Uses")
     Rel(Order, DBPackage, "Uses")
     Rel(Order, Streamer, "PushMessage")
 
