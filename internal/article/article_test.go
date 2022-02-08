@@ -1,4 +1,4 @@
-package product
+package article
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -46,7 +46,7 @@ func TestArticleService_GetAll(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	articleService := &ArticleService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	articles := []Article{
@@ -67,7 +67,7 @@ func TestArticleService_GetById(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	articleService := &ArticleService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	article := Article{ID: 1, Name: "test"}
@@ -86,7 +86,7 @@ func TestArticleService_Create(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	articleService := &ArticleService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	article := Article{ID: 1, Name: "test"}
@@ -105,7 +105,7 @@ func TestArticleService_Update(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	articleService := &ArticleService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	article := Article{ID: 1, Name: "test"}
@@ -124,7 +124,7 @@ func TestArticleService_Delete(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	articleService := &ArticleService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	article := Article{ID: 1, Name: "test"}

@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/unicod3/horreum/pkg/dbclient"
 	"github.com/unicod3/horreum/pkg/dbclient/mocks"
+	"github.com/unicod3/horreum/pkg/streamer"
 	"testing"
 )
 
@@ -64,7 +65,9 @@ func TestOrderService_Create(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	orderService := &OrderService{
-		DataTable: &dataTable,
+		DataTable:     &dataTable,
+		StreamTopic:   "orders",
+		StreamChannel: streamer.NewChannel(),
 	}
 
 	order := Order{ID: 1, Customer: "test"}
@@ -73,6 +76,7 @@ func TestOrderService_Create(t *testing.T) {
 	dataTable.On("InsertReturning", &order).Run(func(args mock.Arguments) {
 		w = order
 	}).Return(nil).Once()
+
 	err := orderService.Create(&order)
 	assert.Nil(err)
 	assert.Equal(order, w)
@@ -83,7 +87,9 @@ func TestOrderService_Update(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	orderService := &OrderService{
-		DataTable: &dataTable,
+		DataTable:     &dataTable,
+		StreamTopic:   "orders",
+		StreamChannel: streamer.NewChannel(),
 	}
 
 	order := Order{ID: 1, Customer: "test"}
@@ -105,7 +111,9 @@ func TestOrderService_Delete(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	orderService := &OrderService{
-		DataTable: &dataTable,
+		DataTable:     &dataTable,
+		StreamTopic:   "orders",
+		StreamChannel: streamer.NewChannel(),
 	}
 
 	order := Order{ID: 1, Customer: "test"}

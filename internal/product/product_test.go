@@ -3,6 +3,8 @@ package product
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/unicod3/horreum/internal/article"
+	articleMock "github.com/unicod3/horreum/internal/article/mocks"
 	"github.com/unicod3/horreum/pkg/dbclient"
 	"github.com/unicod3/horreum/pkg/dbclient/mocks"
 	"github.com/upper/db/v4"
@@ -20,7 +22,7 @@ func TestProduct_CalculateSellableInventory(t *testing.T) {
 
 	t.Run("Test can get the minimum article inventory", func(t *testing.T) {
 		product := &Product{
-			Articles: []Article{
+			Articles: []article.Article{
 				{
 					AvailableInventory: -4,
 				},
@@ -38,6 +40,114 @@ func TestProduct_CalculateSellableInventory(t *testing.T) {
 	})
 }
 
+func TestProduct_DecreaseStockBy(t *testing.T) {
+	assert := assert.New(t)
+
+	t.Run("Test can decrease stock", func(t *testing.T) {
+		art1 := article.Article{
+			ID:       1,
+			Stock:    10,
+			AmountOf: 3,
+		}
+		art2 := article.Article{
+			ID:       2,
+			Stock:    5,
+			AmountOf: 2,
+		}
+		art3 := article.Article{
+			ID:       3,
+			Stock:    10,
+			AmountOf: 3,
+		}
+
+		product := &Product{
+			Articles: []article.Article{
+				art1, art2, art3,
+			},
+		}
+
+		orderQuantity := int64(2)
+		newArt1 := article.Article{
+			ID:    uint64(1),
+			Stock: art1.Stock - (art1.AmountOf * orderQuantity),
+		}
+
+		newArt2 := article.Article{
+			ID:    uint64(2),
+			Stock: art2.Stock - (art2.AmountOf * orderQuantity),
+		}
+
+		newArt3 := article.Article{
+			ID:    uint64(3),
+			Stock: art3.Stock - (art3.AmountOf * orderQuantity),
+		}
+		articleService := &articleMock.ArticleRepository{}
+		articleService.On("Update", &newArt1).Return(nil)
+		articleService.On("Update", &newArt2).Return(nil)
+		articleService.On("Update", &newArt3).Return(nil)
+
+		err := product.DecreaseStockBy(articleService, orderQuantity)
+		if err != nil {
+			return
+		}
+		assert.Equal(int64(0), product.SellableInventory)
+	})
+}
+
+func TestProduct_IncreaseStockBy(t *testing.T) {
+	assert := assert.New(t)
+
+	t.Run("Test can increase stock", func(t *testing.T) {
+		art1 := article.Article{
+			ID:       1,
+			Stock:    10,
+			AmountOf: 3,
+		}
+		art2 := article.Article{
+			ID:       2,
+			Stock:    5,
+			AmountOf: 2,
+		}
+		art3 := article.Article{
+			ID:       3,
+			Stock:    10,
+			AmountOf: 3,
+		}
+
+		product := &Product{
+			Articles: []article.Article{
+				art1, art2, art3,
+			},
+		}
+
+		orderQuantity := int64(2)
+		newArt1 := article.Article{
+			ID:    uint64(1),
+			Stock: art1.Stock + (art1.AmountOf * orderQuantity),
+		}
+
+		newArt2 := article.Article{
+			ID:    uint64(2),
+			Stock: art2.Stock + (art2.AmountOf * orderQuantity),
+		}
+
+		newArt3 := article.Article{
+			ID:    uint64(3),
+			Stock: art3.Stock + (art3.AmountOf * orderQuantity),
+		}
+		articleService := &articleMock.ArticleRepository{}
+		articleService.On("Update", &newArt1).Return(nil)
+		articleService.On("Update", &newArt2).Return(nil)
+		articleService.On("Update", &newArt3).Return(nil)
+
+		err := product.IncreaseStockBy(articleService, orderQuantity)
+		if err != nil {
+			return
+		}
+		assert.Equal(int64(0), product.SellableInventory)
+	})
+}
+
 func TestProductServiceImplementsProductRepositoryInterface(t *testing.T) {
 	assert := assert.New(t)
 	assert.Implements((*ProductRepository)(nil), new(ProductService))
@@ -48,7 +158,7 @@ func TestProductService_GetAll(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	productService := &ProductService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	products := Products{
@@ -75,7 +185,7 @@ func TestProductService_GetById(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	productService := &ProductService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	product := Product{ID: 1, Name: "test", Price: 1025}
@@ -84,7 +194,7 @@ func TestProductService_GetById(t *testing.T) {
 	dataTable.On("FindOne", dbclient.Condition{"id": product.ID}, &w).Run(func(args mock.Arguments) {
 		w = product
 	}).Return(nil).Once()
-	var productArticles []Article
+	var productArticles []article.Article
 	dataTable.On("LoadMany2Many", "a.*, pa.amount_of as amount_of",
 		"product_articles pa",
 		"articles a",
@@ -101,7 +211,7 @@ func TestProductService_Create(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	productService := &ProductService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	productID := uint64(1)
@@ -132,7 +242,7 @@ func TestProductService_Create(t *testing.T) {
 		"articles a",
 		"a.id = pa.article_id",
 		dbclient.Condition{"pa.product_id": product.ID},
-		new([]Article)).
+		new([]article.Article)).
 		Return(nil).Once()
 	p, err := productService.Create(&product)
 	assert.Nil(err)
@@ -144,7 +254,7 @@ func TestProductService_Update(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	productService := &ProductService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 	productID := uint64(1)
 	product := Product{
@@ -174,7 +284,7 @@ func TestProductService_Update(t *testing.T) {
 		"articles a",
 		"a.id = pa.article_id",
 		dbclient.Condition{"pa.product_id": product.ID},
-		new([]Article)).
+		new([]article.Article)).
 		Return(nil).Once()
 	p, err := productService.Update(&product)
 	assert.Nil(err)
@@ -186,7 +296,7 @@ func TestProductService_Delete(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	productService := &ProductService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	product := Product{ID: 1, Name: "test"}

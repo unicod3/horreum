@@ -1,4 +1,4 @@
-package product
+package article
 
 import (
 	"github.com/unicod3/horreum/pkg/dbclient"
@@ -39,6 +39,12 @@ func (a *Article) CalculateAvailableInventory() {
 type ArticleRequestBody struct {
 	Name  string `json:"name" db:"name"`
 	Stock int64  `json:"stock" db:"stock"`
+}
+
+// ErrorResponse contains information about error
+type ErrorResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }
 
 // ArticleService holds information about the datatable

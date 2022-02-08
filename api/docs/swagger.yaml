@@ -1,4 +1,35 @@
 definitions:
+  article.Article:
+    properties:
+      amount_of:
+        type: integer
+      available_inventory:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      stock:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  article.ArticleRequestBody:
+    properties:
+      name:
+        type: string
+      stock:
+        type: integer
+    type: object
+  article.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
   order.ErrorResponse:
     properties:
       code:
@@ -56,30 +87,6 @@ definitions:
       warehouse_id:
         type: integer
     type: object
-  product.Article:
-    properties:
-      amount_of:
-        type: integer
-      available_inventory:
-        type: integer
-      created_at:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      stock:
-        type: integer
-      updated_at:
-        type: string
-    type: object
-  product.ArticleRequestBody:
-    properties:
-      name:
-        type: string
-      stock:
-        type: integer
-    type: object
   product.ErrorResponse:
     properties:
       code:
@@ -91,7 +98,7 @@ definitions:
     properties:
       articles:
         items:
-          $ref: '#/definitions/product.Article'
+          $ref: '#/definitions/article.Article'
         type: array
       created_at:
         type: string
@@ -180,7 +187,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/product.Article'
+              $ref: '#/definitions/article.Article'
             type: array
       summary: Get all articles
       tags:
@@ -196,18 +203,18 @@ paths:
         name: article
         required: true
         schema:
-          $ref: '#/definitions/product.ArticleRequestBody'
+          $ref: '#/definitions/article.ArticleRequestBody'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/product.Article'
+            $ref: '#/definitions/article.Article'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/product.ErrorResponse'
+            $ref: '#/definitions/article.ErrorResponse'
       summary: Create a article with given data
       tags:
       - articles
@@ -233,11 +240,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/product.ErrorResponse'
+            $ref: '#/definitions/article.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/product.ErrorResponse'
+            $ref: '#/definitions/article.ErrorResponse'
       summary: Delete a article by id
       tags:
       - articles
@@ -258,15 +265,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/product.Article'
+            $ref: '#/definitions/article.Article'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/product.ErrorResponse'
+            $ref: '#/definitions/article.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/product.ErrorResponse'
+            $ref: '#/definitions/article.ErrorResponse'
       summary: Get single article by id
       tags:
       - articles
@@ -286,22 +293,22 @@ paths:
         name: article
         required: true
         schema:
-          $ref: '#/definitions/product.ArticleRequestBody'
+          $ref: '#/definitions/article.ArticleRequestBody'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/product.Article'
+            $ref: '#/definitions/article.Article'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/product.ErrorResponse'
+            $ref: '#/definitions/article.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/product.ErrorResponse'
+            $ref: '#/definitions/article.ErrorResponse'
       summary: Update a article with given data
       tags:
       - articles
@@ -479,7 +486,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/product.Article'
+            $ref: '#/definitions/product.Product'
         "400":
           description: Bad Request
           schema:

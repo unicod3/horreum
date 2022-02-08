@@ -36,7 +36,7 @@ const docTemplate_swagger = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/product.Article"
+                                "$ref": "#/definitions/article.Article"
                             }
                         }
                     }
@@ -62,7 +62,7 @@ const docTemplate_swagger = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/product.ArticleRequestBody"
+                            "$ref": "#/definitions/article.ArticleRequestBody"
                         }
                     }
                 ],
@@ -70,13 +70,13 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.Article"
+                            "$ref": "#/definitions/article.Article"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     }
                 }
@@ -109,19 +109,19 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.Article"
+                            "$ref": "#/definitions/article.Article"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     }
                 }
@@ -153,7 +153,7 @@ const docTemplate_swagger = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/product.ArticleRequestBody"
+                            "$ref": "#/definitions/article.ArticleRequestBody"
                         }
                     }
                 ],
@@ -161,19 +161,19 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.Article"
+                            "$ref": "#/definitions/article.Article"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     }
                 }
@@ -210,13 +210,13 @@ const docTemplate_swagger = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     }
                 }
@@ -482,7 +482,7 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.Article"
+                            "$ref": "#/definitions/product.Product"
                         }
                     },
                     "400": {
@@ -842,6 +842,54 @@ const docTemplate_swagger = `{
         }
     },
     "definitions": {
+        "article.Article": {
+            "type": "object",
+            "properties": {
+                "amount_of": {
+                    "type": "integer"
+                },
+                "available_inventory": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "article.ArticleRequestBody": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
+                }
+            }
+        },
+        "article.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "order.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -930,43 +978,6 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "product.Article": {
-            "type": "object",
-            "properties": {
-                "amount_of": {
-                    "type": "integer"
-                },
-                "available_inventory": {
-                    "type": "integer"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "stock": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "product.ArticleRequestBody": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "stock": {
-                    "type": "integer"
-                }
-            }
-        },
         "product.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -984,7 +995,7 @@ const docTemplate_swagger = `{
                 "articles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/product.Article"
+                        "$ref": "#/definitions/article.Article"
                     }
                 },
                 "created_at": {

@@ -24,7 +24,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/product.Article"
+                                "$ref": "#/definitions/article.Article"
                             }
                         }
                     }
@@ -50,7 +50,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/product.ArticleRequestBody"
+                            "$ref": "#/definitions/article.ArticleRequestBody"
                         }
                     }
                 ],
@@ -58,13 +58,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.Article"
+                            "$ref": "#/definitions/article.Article"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     }
                 }
@@ -97,19 +97,19 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.Article"
+                            "$ref": "#/definitions/article.Article"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     }
                 }
@@ -141,7 +141,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/product.ArticleRequestBody"
+                            "$ref": "#/definitions/article.ArticleRequestBody"
                         }
                     }
                 ],
@@ -149,19 +149,19 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.Article"
+                            "$ref": "#/definitions/article.Article"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     }
                 }
@@ -198,13 +198,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/product.ErrorResponse"
+                            "$ref": "#/definitions/article.ErrorResponse"
                         }
                     }
                 }
@@ -470,7 +470,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.Article"
+                            "$ref": "#/definitions/product.Product"
                         }
                     },
                     "400": {
@@ -830,6 +830,54 @@
         }
     },
     "definitions": {
+        "article.Article": {
+            "type": "object",
+            "properties": {
+                "amount_of": {
+                    "type": "integer"
+                },
+                "available_inventory": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "article.ArticleRequestBody": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
+                }
+            }
+        },
+        "article.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "order.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -918,43 +966,6 @@
                 }
             }
         },
-        "product.Article": {
-            "type": "object",
-            "properties": {
-                "amount_of": {
-                    "type": "integer"
-                },
-                "available_inventory": {
-                    "type": "integer"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "stock": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "product.ArticleRequestBody": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "stock": {
-                    "type": "integer"
-                }
-            }
-        },
         "product.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -972,7 +983,7 @@
                 "articles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/product.Article"
+                        "$ref": "#/definitions/article.Article"
                     }
                 },
                 "created_at": {

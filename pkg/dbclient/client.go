@@ -44,7 +44,7 @@ func NewPostgresClient(host, user, database, password string) DataStorage {
 		User:     user,
 		Password: password,
 	}
-	db.LC().SetLevel(db.LogLevelTrace)
+	db.LC().SetLevel(db.LogLevelInfo)
 	sess, err := postgresql.Open(settings)
 	if err != nil {
 		log.Fatalf("db.Open(): %q\n", err)

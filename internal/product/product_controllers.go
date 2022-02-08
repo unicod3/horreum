@@ -67,7 +67,7 @@ func (service *ProductService) GetProduct(g *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param article body ProductRequestBody true "Product"
-// @Success 200 {object} Article
+// @Success 200 {object} Product
 // @Failure 400 {object} ErrorResponse
 // @Router /products/ [post]
 func (service *ProductService) CreateProduct(g *gin.Context) {

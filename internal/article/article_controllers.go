@@ -1,4 +1,4 @@
-package product
+package article
 
 import (
 	"github.com/gin-gonic/gin"

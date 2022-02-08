@@ -1,6 +1,7 @@
 package product
 
 import (
+	"github.com/unicod3/horreum/internal/article"
 	"github.com/unicod3/horreum/pkg/dbclient"
 	"github.com/unicod3/horreum/pkg/streamer"
 	"sort"
@@ -18,13 +19,13 @@ type ProductRepository interface {
 
 // Product represents a record from products table
 type Product struct {
-	ID                uint64    `json:"id" uri:"id" db:"id,omitempty"`
-	CreatedAt         time.Time `json:"created_at,omitempty" db:"created_at,omitempty"`
-	UpdatedAt         time.Time `json:"updated_at,omitempty" db:"updated_at,omitempty"`
-	Name              string    `json:"name" db:"name"`
-	Price             int64     `json:"price" db:"price"`
-	SellableInventory int64     `json:"sellable_inventory,omitempty" db:"-"`
-	Articles          []Article `json:"articles" db:"-"`
+	ID                uint64            `json:"id" uri:"id" db:"id,omitempty"`
+	CreatedAt         time.Time         `json:"created_at,omitempty" db:"created_at,omitempty"`
+	UpdatedAt         time.Time         `json:"updated_at,omitempty" db:"updated_at,omitempty"`
+	Name              string            `json:"name" db:"name"`
+	Price             int64             `json:"price" db:"price"`
+	SellableInventory int64             `json:"sellable_inventory,omitempty" db:"-"`
+	Articles          []article.Article `json:"articles" db:"-"`
 }
 
 func (p *Product) CalculateSellableInventory() {
@@ -40,16 +41,16 @@ func (p *Product) CalculateSellableInventory() {
 	p.SellableInventory = minInventoryOfArticles
 }
 
-func (p *Product) IncreaseStockBy(articleService *ArticleService, quantity int64) error {
+func (p *Product) IncreaseStockBy(articleService article.ArticleRepository, quantity int64) error {
 	if quantity == 0 {
 		return nil
 	}
 
-	for _, article := range p.Articles {
-		decreaseAmount := article.AmountOf * quantity
-		newStock := article.Stock + decreaseAmount
-		err := articleService.Update(&Article{
-			ID:    article.ID,
+	for _, art := range p.Articles {
+		decreaseAmount := art.AmountOf * quantity
+		newStock := art.Stock + decreaseAmount
+		err := articleService.Update(&article.Article{
+			ID:    art.ID,
 			Stock: newStock,
 		})
 		if err != nil {
@@ -59,16 +60,16 @@ func (p *Product) IncreaseStockBy(articleService *ArticleService, quantity int64
 	return nil
 }
 
-func (p *Product) DecreaseStockBy(articleService *ArticleService, quantity int64) error {
+func (p *Product) DecreaseStockBy(articleService article.ArticleRepository, quantity int64) error {
 	if quantity == 0 {
 		return nil
 	}
 
-	for _, article := range p.Articles {
-		decreaseAmount := article.AmountOf * quantity
-		newStock := article.Stock - decreaseAmount
-		err := articleService.Update(&Article{
-			ID:    article.ID,
+	for _, art := range p.Articles {
+		decreaseAmount := art.AmountOf * quantity
+		newStock := art.Stock - decreaseAmount
+		err := articleService.Update(&article.Article{
+			ID:    art.ID,
 			Stock: newStock,
 		})
 		if err != nil {
@@ -85,8 +86,8 @@ type ProductArticleRelation struct {
 }
 
 type ProductArticle struct {
-	ProductID uint64 `db:"product_id"`
-	Article   `db:",inline"`
+	ProductID       uint64 `db:"product_id"`
+	article.Article `db:",inline"`
 }
 
 // Products holds multiple Product
@@ -216,7 +217,7 @@ func (service *ProductService) Delete(p *Product) error {
 }
 
 func (service *ProductService) populateArticle(product *Product) error {
-	var productArticles []Article
+	var productArticles []article.Article
 	err := service.DataTable.LoadMany2Many(
 		"a.*, pa.amount_of as amount_of",
 		"product_articles pa",
@@ -254,7 +255,7 @@ func (service *ProductService) populateArticles(products Products) (Products, er
 	for _, productArticle := range productArticles {
 		product := productMap[productArticle.ProductID]
 
-		article := Article{
+		article := article.Article{
 			ID:        productArticle.ID,
 			CreatedAt: productArticle.CreatedAt,
 			UpdatedAt: productArticle.UpdatedAt,

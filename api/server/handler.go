@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/unicod3/horreum/internal/article"
 	"github.com/unicod3/horreum/internal/order"
 	"github.com/unicod3/horreum/internal/product"
 	"github.com/unicod3/horreum/internal/warehouse"
@@ -12,7 +13,7 @@ import (
 type Handler struct {
 	WarehouseService *warehouse.WarehouseService
 	OrderService     *order.OrderService
-	ArticleService   *product.ArticleService
+	ArticleService   *article.ArticleService
 	ProductService   *product.ProductService
 }
 
@@ -29,7 +30,7 @@ func NewHandler(client *dbclient.DataStorage, streamChannel streamer.Channel) *H
 			StreamChannel: streamChannel,
 			StreamTopic:   "warehouses",
 		},
-		ArticleService: &product.ArticleService{
+		ArticleService: &article.ArticleService{
 			DataTable:     (*client).NewDataCollection("articles"),
 			StreamChannel: streamChannel,
 			StreamTopic:   "articles",

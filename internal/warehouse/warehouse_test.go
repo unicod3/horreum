@@ -18,7 +18,7 @@ func TestWarehouseService_GetAll(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	warehouseService := &WarehouseService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	warehouses := []Warehouse{
@@ -39,7 +39,7 @@ func TestWarehouseService_GetById(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	warehouseService := &WarehouseService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	warehouse := Warehouse{ID: 1, Name: "test"}
@@ -58,7 +58,7 @@ func TestWarehouseService_Create(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	warehouseService := &WarehouseService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	warehouse := Warehouse{ID: 1, Name: "test"}
@@ -77,7 +77,7 @@ func TestWarehouseService_Update(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	warehouseService := &WarehouseService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	warehouse := Warehouse{ID: 1, Name: "test"}
@@ -96,7 +96,7 @@ func TestWarehouseService_Delete(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	warehouseService := &WarehouseService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	warehouse := Warehouse{ID: 1, Name: "test"}
