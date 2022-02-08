@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// ListArticle example
+// ListArticles example
 // @Tags articles
 // @Summary Get all articles
 // @Description Get all articles
@@ -14,8 +14,8 @@ import (
 // @Produce  json
 // @Success 200 {array} Article
 // @Router /articles/ [get]
-func (h *Handler) ListArticle(g *gin.Context) {
-	articles, err := h.ArticleService.GetAll()
+func (service *ArticleService) ListArticles(g *gin.Context) {
+	articles, err := service.GetAll()
 	if err != nil {
 		return
 	}
@@ -34,7 +34,7 @@ func (h *Handler) ListArticle(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /articles/{id} [get]
-func (h *Handler) GetArticle(g *gin.Context) {
+func (service *ArticleService) GetArticle(g *gin.Context) {
 	var article Article
 
 	if err := g.ShouldBindUri(&article); err != nil {
@@ -45,7 +45,7 @@ func (h *Handler) GetArticle(g *gin.Context) {
 		return
 	}
 
-	w, err := h.ArticleService.GetById(article.ID)
+	w, err := service.GetById(article.ID)
 	if err != nil {
 		g.JSON(http.StatusNotFound, ErrorResponse{
 			Code:    http.StatusNotFound,
@@ -66,7 +66,7 @@ func (h *Handler) GetArticle(g *gin.Context) {
 // @Success 200 {object} Article
 // @Failure 400 {object} ErrorResponse
 // @Router /articles/ [post]
-func (h *Handler) CreateArticle(g *gin.Context) {
+func (service *ArticleService) CreateArticle(g *gin.Context) {
 	var article Article
 
 	if err := g.ShouldBindJSON(&article); err != nil {
@@ -77,7 +77,7 @@ func (h *Handler) CreateArticle(g *gin.Context) {
 		return
 	}
 
-	err := h.ArticleService.Create(&article)
+	err := service.Create(&article)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -102,7 +102,7 @@ func (h *Handler) CreateArticle(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /articles/{id} [put]
-func (h *Handler) UpdateArticle(g *gin.Context) {
+func (service *ArticleService) UpdateArticle(g *gin.Context) {
 	var article Article
 
 	if err := g.ShouldBindUri(&article); err != nil {
@@ -121,7 +121,7 @@ func (h *Handler) UpdateArticle(g *gin.Context) {
 		return
 	}
 
-	err := h.ArticleService.Update(&article)
+	err := service.Update(&article)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -145,7 +145,7 @@ func (h *Handler) UpdateArticle(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /articles/{id} [delete]
-func (h *Handler) DeleteArticle(g *gin.Context) {
+func (service *ArticleService) DeleteArticle(g *gin.Context) {
 	var article Article
 
 	if err := g.ShouldBindUri(&article); err != nil {
@@ -156,7 +156,7 @@ func (h *Handler) DeleteArticle(g *gin.Context) {
 		return
 	}
 
-	err := h.ArticleService.Delete(&article)
+	err := service.Delete(&article)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,

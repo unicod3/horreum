@@ -18,7 +18,7 @@ func TestOrderService_GetAll(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	orderService := &OrderService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	orders := []Order{
@@ -40,7 +40,7 @@ func TestOrderService_GetById(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	orderService := &OrderService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	order := Order{ID: 1, Customer: "test"}
@@ -64,7 +64,7 @@ func TestOrderService_Create(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	orderService := &OrderService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	order := Order{ID: 1, Customer: "test"}
@@ -83,7 +83,7 @@ func TestOrderService_Update(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	orderService := &OrderService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	order := Order{ID: 1, Customer: "test"}
@@ -105,7 +105,7 @@ func TestOrderService_Delete(t *testing.T) {
 
 	dataTable := mocks.DataTable{}
 	orderService := &OrderService{
-		dataTable: &dataTable,
+		DataTable: &dataTable,
 	}
 
 	order := Order{ID: 1, Customer: "test"}

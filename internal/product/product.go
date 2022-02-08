@@ -2,27 +2,10 @@ package product
 
 import (
 	"github.com/unicod3/horreum/pkg/dbclient"
+	"github.com/unicod3/horreum/pkg/streamer"
 	"sort"
 	"time"
 )
-
-// Handler holds services that are exposed
-type Handler struct {
-	ArticleService ArticleRepository
-	ProductService ProductRepository
-}
-
-// NewHandler returns a new Handler
-func NewHandler(client *dbclient.DataStorage) *Handler {
-	return &Handler{
-		ArticleService: &ArticleService{
-			dataTable: (*client).NewDataCollection("articles"),
-		},
-		ProductService: &ProductService{
-			dataTable: (*client).NewDataCollection("products"),
-		},
-	}
-}
 
 // ProductRepository serves as a contract over ArticleService
 type ProductRepository interface {
@@ -121,13 +104,15 @@ type ProductRequestBody struct {
 // ProductService holds information about the datatable
 // and implements ArticleService
 type ProductService struct {
-	dataTable dbclient.DataTable
+	DataTable     dbclient.DataTable
+	StreamChannel streamer.Channel
+	StreamTopic   string
 }
 
 // GetAll returns all the records
 func (service *ProductService) GetAll() (Products, error) {
 	var products Products
-	err := service.dataTable.FindAll(&products)
+	err := service.DataTable.FindAll(&products)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +131,7 @@ func (service *ProductService) GetAll() (Products, error) {
 // GetById returns single record for given pk id
 func (service *ProductService) GetById(id uint64) (*Product, error) {
 	var product Product
-	if err := service.dataTable.FindOne(dbclient.Condition{"id": id}, &product); err != nil {
+	if err := service.DataTable.FindOne(dbclient.Condition{"id": id}, &product); err != nil {
 		return nil, err
 	}
 	err := service.populateArticle(&product)
@@ -159,7 +144,7 @@ func (service *ProductService) GetById(id uint64) (*Product, error) {
 
 // Create creates a new record on the datastore with given struct
 func (service *ProductService) Create(p *Product) (*Product, error) {
-	if err := service.dataTable.InsertReturning(p); err != nil {
+	if err := service.DataTable.InsertReturning(p); err != nil {
 		return nil, err
 	}
 	err := service.syncArticles(p)
@@ -173,7 +158,7 @@ func (service *ProductService) Create(p *Product) (*Product, error) {
 // Update updates given record on the datastore by finding it with its pk
 func (service *ProductService) Update(p *Product) (*Product, error) {
 	p.UpdatedAt = time.Now().UTC()
-	if err := service.dataTable.UpdateReturning(p); err != nil {
+	if err := service.DataTable.UpdateReturning(p); err != nil {
 		return nil, err
 	}
 	err := service.syncArticles(p)
@@ -186,7 +171,7 @@ func (service *ProductService) Update(p *Product) (*Product, error) {
 
 // Delete deletes the given struct from database by finding it with its pk
 func (service *ProductService) Delete(p *Product) error {
-	if err := service.dataTable.Delete(dbclient.Condition{"id": p.ID}); err != nil {
+	if err := service.DataTable.Delete(dbclient.Condition{"id": p.ID}); err != nil {
 		return err
 	}
 	return nil
@@ -194,7 +179,7 @@ func (service *ProductService) Delete(p *Product) error {
 
 func (service *ProductService) populateArticle(product *Product) error {
 	var productArticles []Article
-	err := service.dataTable.LoadMany2Many(
+	err := service.DataTable.LoadMany2Many(
 		"a.*, pa.amount_of as amount_of",
 		"product_articles pa",
 		"articles a",
@@ -216,7 +201,7 @@ func (service *ProductService) populateArticle(product *Product) error {
 
 func (service *ProductService) populateArticles(products Products) (Products, error) {
 	var productArticles []ProductArticle
-	err := service.dataTable.LoadMany2Many(
+	err := service.DataTable.LoadMany2Many(
 		"pa.product_id as product_id, a.*, pa.amount_of as amount_of",
 		"product_articles pa",
 		"articles a",
@@ -248,12 +233,12 @@ func (service *ProductService) populateArticles(products Products) (Products, er
 }
 
 func (service *ProductService) syncArticles(p *Product) error {
-	err := service.dataTable.DeleteRelated("product_articles", dbclient.Condition{"product_id": p.ID})
+	err := service.DataTable.DeleteRelated("product_articles", dbclient.Condition{"product_id": p.ID})
 	if err != nil {
 		return err
 	}
 	for _, article := range p.Articles {
-		err = service.dataTable.CreateRelated("product_articles", &ProductArticleRelation{
+		err = service.DataTable.CreateRelated("product_articles", &ProductArticleRelation{
 			ProductID: p.ID,
 			ArticleID: article.ID,
 			AmountOf:  article.AmountOf,

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// List example
+// ListWarehouses example
 // @Tags warehouses
 // @Summary Get all warehouses
 // @Description Get all warehouses
@@ -14,15 +14,15 @@ import (
 // @Produce  json
 // @Success 200 {array} Warehouse
 // @Router /warehouses/ [get]
-func (h *Handler) List(g *gin.Context) {
-	warehouses, err := h.WarehouseService.GetAll()
+func (service *WarehouseService) ListWarehouses(g *gin.Context) {
+	warehouses, err := service.GetAll()
 	if err != nil {
 		return
 	}
 	g.JSON(http.StatusOK, warehouses)
 }
 
-// Get example
+// GetWarehouse example
 // @Tags warehouses
 // @Summary Get single warehouse by id
 // @Description Get single warehouse by id
@@ -34,7 +34,7 @@ func (h *Handler) List(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /warehouses/{id} [get]
-func (h *Handler) Get(g *gin.Context) {
+func (service *WarehouseService) GetWarehouse(g *gin.Context) {
 	warehouse := Warehouse{}
 
 	if err := g.ShouldBindUri(&warehouse); err != nil {
@@ -45,7 +45,7 @@ func (h *Handler) Get(g *gin.Context) {
 		return
 	}
 
-	w, err := h.WarehouseService.GetById(warehouse.ID)
+	w, err := service.GetById(warehouse.ID)
 	if err != nil {
 		g.JSON(http.StatusNotFound, ErrorResponse{
 			Code:    http.StatusNotFound,
@@ -55,7 +55,7 @@ func (h *Handler) Get(g *gin.Context) {
 	g.JSON(http.StatusOK, w)
 }
 
-// Create example
+// CreateWarehouse example
 // @Tags warehouses
 // @Summary Create a warehouse with given data
 // @Description Create a warehouse with given data
@@ -66,7 +66,7 @@ func (h *Handler) Get(g *gin.Context) {
 // @Success 200 {object} Warehouse
 // @Failure 400 {object} ErrorResponse
 // @Router /warehouses/ [post]
-func (h *Handler) Create(g *gin.Context) {
+func (service *WarehouseService) CreateWarehouse(g *gin.Context) {
 	var warehouse Warehouse
 	if err := g.ShouldBindJSON(&warehouse); err != nil {
 		g.JSON(http.StatusBadRequest, ErrorResponse{
@@ -76,7 +76,7 @@ func (h *Handler) Create(g *gin.Context) {
 		return
 	}
 
-	err := h.WarehouseService.Create(&warehouse)
+	err := service.Create(&warehouse)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -88,7 +88,7 @@ func (h *Handler) Create(g *gin.Context) {
 	g.JSON(http.StatusCreated, warehouse)
 }
 
-// Update example
+// UpdateWarehouse example
 // @Tags warehouses
 // @Summary Update a warehouse with given data
 // @Description Update a warehouse with given data
@@ -101,7 +101,7 @@ func (h *Handler) Create(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /warehouses/{id} [put]
-func (h *Handler) Update(g *gin.Context) {
+func (service *WarehouseService) UpdateWarehouse(g *gin.Context) {
 	var warehouse Warehouse
 
 	if err := g.ShouldBindUri(&warehouse); err != nil {
@@ -120,7 +120,7 @@ func (h *Handler) Update(g *gin.Context) {
 		return
 	}
 
-	err := h.WarehouseService.Update(&warehouse)
+	err := service.Update(&warehouse)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -132,7 +132,7 @@ func (h *Handler) Update(g *gin.Context) {
 	g.JSON(http.StatusOK, warehouse)
 }
 
-// Delete example
+// DeleteWarehouse example
 // @Tags warehouses
 // @Summary Delete a warehouse by id
 // @Description Delete a warehouse by id
@@ -144,7 +144,7 @@ func (h *Handler) Update(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /warehouses/{id} [delete]
-func (h *Handler) Delete(g *gin.Context) {
+func (service *WarehouseService) DeleteWarehouse(g *gin.Context) {
 	warehouse := Warehouse{}
 
 	if err := g.ShouldBindUri(&warehouse); err != nil {
@@ -155,7 +155,7 @@ func (h *Handler) Delete(g *gin.Context) {
 		return
 	}
 
-	err := h.WarehouseService.Delete(&warehouse)
+	err := service.Delete(&warehouse)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// List example
+// ListOrders example
 // @Tags orders
 // @Summary Get all orders
 // @Description Get all orders
@@ -14,15 +14,15 @@ import (
 // @Produce  json
 // @Success 200 {array} Order
 // @Router /orders/ [get]
-func (h *Handler) List(g *gin.Context) {
-	orders, err := h.OrderService.GetAll()
+func (service *OrderService) ListOrders(g *gin.Context) {
+	orders, err := service.GetAll()
 	if err != nil {
 		return
 	}
 	g.JSON(http.StatusOK, orders)
 }
 
-// Get example
+// GetOrder example
 // @Tags orders
 // @Summary Get single order by id
 // @Description Get single order by id
@@ -34,7 +34,7 @@ func (h *Handler) List(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /orders/{id} [get]
-func (h *Handler) Get(g *gin.Context) {
+func (service *OrderService) GetOrder(g *gin.Context) {
 	var order Order
 
 	if err := g.ShouldBindUri(&order); err != nil {
@@ -45,7 +45,7 @@ func (h *Handler) Get(g *gin.Context) {
 		return
 	}
 
-	w, err := h.OrderService.GetById(order.ID)
+	w, err := service.GetById(order.ID)
 	if err != nil {
 		g.JSON(http.StatusNotFound, ErrorResponse{
 			Code:    http.StatusNotFound,
@@ -55,7 +55,7 @@ func (h *Handler) Get(g *gin.Context) {
 	g.JSON(http.StatusOK, w)
 }
 
-// Create example
+// CreateOrder example
 // @Tags orders
 // @Summary Create a order with given data
 // @Description Create a order with given data
@@ -66,7 +66,7 @@ func (h *Handler) Get(g *gin.Context) {
 // @Success 200 {object} Order
 // @Failure 400 {object} ErrorResponse
 // @Router /orders/ [post]
-func (h *Handler) Create(g *gin.Context) {
+func (service *OrderService) CreateOrder(g *gin.Context) {
 	var order Order
 
 	if err := g.ShouldBindJSON(&order); err != nil {
@@ -77,7 +77,7 @@ func (h *Handler) Create(g *gin.Context) {
 		return
 	}
 
-	err := h.OrderService.Create(&order)
+	err := service.Create(&order)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -89,7 +89,7 @@ func (h *Handler) Create(g *gin.Context) {
 	g.JSON(http.StatusCreated, order)
 }
 
-// Update example
+// UpdateOrder example
 // @Tags orders
 // @Summary Update a order with given data
 // @Description Update a order with given data
@@ -102,7 +102,7 @@ func (h *Handler) Create(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /orders/{id} [put]
-func (h *Handler) Update(g *gin.Context) {
+func (service *OrderService) UpdateOrder(g *gin.Context) {
 	var order Order
 
 	if err := g.ShouldBindUri(&order); err != nil {
@@ -121,7 +121,7 @@ func (h *Handler) Update(g *gin.Context) {
 		return
 	}
 
-	err := h.OrderService.Update(&order)
+	err := service.Update(&order)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -133,7 +133,7 @@ func (h *Handler) Update(g *gin.Context) {
 	g.JSON(http.StatusOK, order)
 }
 
-// Delete example
+// DeleteOrder example
 // @Tags orders
 // @Summary Delete a order by id
 // @Description Delete a order by id
@@ -145,7 +145,7 @@ func (h *Handler) Update(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /orders/{id} [delete]
-func (h *Handler) Delete(g *gin.Context) {
+func (service *OrderService) DeleteOrder(g *gin.Context) {
 	var order Order
 
 	if err := g.ShouldBindUri(&order); err != nil {
@@ -156,7 +156,7 @@ func (h *Handler) Delete(g *gin.Context) {
 		return
 	}
 
-	err := h.OrderService.Delete(&order)
+	err := service.Delete(&order)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,

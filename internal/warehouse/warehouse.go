@@ -2,22 +2,9 @@ package warehouse
 
 import (
 	"github.com/unicod3/horreum/pkg/dbclient"
+	"github.com/unicod3/horreum/pkg/streamer"
 	"time"
 )
-
-// Handler holds services that are exposed
-type Handler struct {
-	WarehouseService WarehouseRepository
-}
-
-// NewHandler returns a new Handler
-func NewHandler(client *dbclient.DataStorage) *Handler {
-	return &Handler{
-		WarehouseService: &WarehouseService{
-			(*client).NewDataCollection("warehouses"),
-		},
-	}
-}
 
 // Warehouse represents a record from warehouses table
 type Warehouse struct {
@@ -50,13 +37,15 @@ type WarehouseRepository interface {
 // WarehouseService holds information about the datatable
 // and implements WarehouseRepository
 type WarehouseService struct {
-	dataTable dbclient.DataTable
+	DataTable     dbclient.DataTable
+	StreamChannel streamer.Channel
+	StreamTopic   string
 }
 
 // GetAll returns all the records
 func (service *WarehouseService) GetAll() ([]Warehouse, error) {
 	var warehouses []Warehouse
-	if err := service.dataTable.FindAll(&warehouses); err != nil {
+	if err := service.DataTable.FindAll(&warehouses); err != nil {
 		return nil, err
 	}
 	return warehouses, nil
@@ -65,7 +54,7 @@ func (service *WarehouseService) GetAll() ([]Warehouse, error) {
 // GetById returns single record for given pk id
 func (service *WarehouseService) GetById(id uint64) (*Warehouse, error) {
 	var warehouse Warehouse
-	if err := service.dataTable.FindOne(dbclient.Condition{"id": id}, &warehouse); err != nil {
+	if err := service.DataTable.FindOne(dbclient.Condition{"id": id}, &warehouse); err != nil {
 		return nil, err
 	}
 	return &warehouse, nil
@@ -73,7 +62,7 @@ func (service *WarehouseService) GetById(id uint64) (*Warehouse, error) {
 
 // Create creates a new record on the datastore with given struct
 func (service *WarehouseService) Create(w *Warehouse) error {
-	if err := service.dataTable.InsertReturning(w); err != nil {
+	if err := service.DataTable.InsertReturning(w); err != nil {
 		return err
 	}
 	return nil
@@ -82,7 +71,7 @@ func (service *WarehouseService) Create(w *Warehouse) error {
 // Update updates given record on the datastore by finding it with its pk
 func (service *WarehouseService) Update(w *Warehouse) error {
 	w.UpdatedAt = time.Now().UTC()
-	if err := service.dataTable.UpdateReturning(w); err != nil {
+	if err := service.DataTable.UpdateReturning(w); err != nil {
 		return err
 	}
 	return nil
@@ -90,7 +79,7 @@ func (service *WarehouseService) Update(w *Warehouse) error {
 
 // Delete deletes the given struct from database by finding it with its pk
 func (service *WarehouseService) Delete(w *Warehouse) error {
-	if err := service.dataTable.Delete(dbclient.Condition{"id": w.ID}); err != nil {
+	if err := service.DataTable.Delete(dbclient.Condition{"id": w.ID}); err != nil {
 		return err
 	}
 	return nil

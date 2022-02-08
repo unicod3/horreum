@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// ListProduct example
+// ListProducts example
 // @Tags products
 // @Summary Get all products
 // @Description Get all products
@@ -14,8 +14,8 @@ import (
 // @Produce  json
 // @Success 200 {array} ProductArticle
 // @Router /products/ [get]
-func (h *Handler) ListProduct(g *gin.Context) {
-	products, err := h.ProductService.GetAll()
+func (service *ProductService) ListProducts(g *gin.Context) {
+	products, err := service.GetAll()
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -38,7 +38,7 @@ func (h *Handler) ListProduct(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /products/{id} [get]
-func (h *Handler) GetProduct(g *gin.Context) {
+func (service *ProductService) GetProduct(g *gin.Context) {
 	var product Product
 
 	if err := g.ShouldBindUri(&product); err != nil {
@@ -49,7 +49,7 @@ func (h *Handler) GetProduct(g *gin.Context) {
 		return
 	}
 
-	w, err := h.ProductService.GetById(product.ID)
+	w, err := service.GetById(product.ID)
 	if err != nil {
 		g.JSON(http.StatusNotFound, ErrorResponse{
 			Code:    http.StatusNotFound,
@@ -70,7 +70,7 @@ func (h *Handler) GetProduct(g *gin.Context) {
 // @Success 200 {object} Article
 // @Failure 400 {object} ErrorResponse
 // @Router /products/ [post]
-func (h *Handler) CreateProduct(g *gin.Context) {
+func (service *ProductService) CreateProduct(g *gin.Context) {
 	var product Product
 
 	if err := g.ShouldBindJSON(&product); err != nil {
@@ -81,7 +81,7 @@ func (h *Handler) CreateProduct(g *gin.Context) {
 		return
 	}
 
-	p, err := h.ProductService.Create(&product)
+	p, err := service.Create(&product)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -106,7 +106,7 @@ func (h *Handler) CreateProduct(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /products/{id} [put]
-func (h *Handler) UpdateProduct(g *gin.Context) {
+func (service *ProductService) UpdateProduct(g *gin.Context) {
 	var product Product
 
 	if err := g.ShouldBindUri(&product); err != nil {
@@ -125,7 +125,7 @@ func (h *Handler) UpdateProduct(g *gin.Context) {
 		return
 	}
 
-	p, err := h.ProductService.Update(&product)
+	p, err := service.Update(&product)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,
@@ -149,7 +149,7 @@ func (h *Handler) UpdateProduct(g *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /products/{id} [delete]
-func (h *Handler) DeleteProduct(g *gin.Context) {
+func (service *ProductService) DeleteProduct(g *gin.Context) {
 	var product Product
 
 	if err := g.ShouldBindUri(&product); err != nil {
@@ -160,7 +160,7 @@ func (h *Handler) DeleteProduct(g *gin.Context) {
 		return
 	}
 
-	err := h.ProductService.Delete(&product)
+	err := service.Delete(&product)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, ErrorResponse{
 			Code:    http.StatusInternalServerError,

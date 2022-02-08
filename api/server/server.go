@@ -5,9 +5,6 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "github.com/unicod3/horreum/api/docs"
-	"github.com/unicod3/horreum/internal/order"
-	"github.com/unicod3/horreum/internal/product"
-	"github.com/unicod3/horreum/internal/warehouse"
 	"github.com/unicod3/horreum/pkg/dbclient"
 	"github.com/unicod3/horreum/pkg/streamer"
 )
@@ -39,7 +36,7 @@ func New(cfg *Config, db *dbclient.DataStorage, streamService *streamer.Stream) 
 var ginRouter = gin.Default()
 
 // Serve registers the ginRouter and runs it
-func (srv *Server) Serve() {
+func (srv *Server) Serve() error {
 	docs.SwaggerInfo_swagger.Title = srv.cfg.SwaggerTitle
 	docs.SwaggerInfo_swagger.Description = srv.cfg.SwaggerDescription
 	docs.SwaggerInfo_swagger.BasePath = srv.cfg.BasePath
@@ -47,17 +44,19 @@ func (srv *Server) Serve() {
 
 	router := registerGinRouter(srv.cfg.BasePath)
 
-	warehouseHandler := warehouse.NewHandler(srv.DataStore)
-	warehouseHandler.RegisterRoutes(router)
+	// Register all the internal services
+	handler := NewHandler(srv.DataStore, streamer.NewChannel())
 
-	orderHandler := order.NewHandler(srv.DataStore, streamer.NewChannel())
-	orderHandler.RegisterHTTPRoutes(router)
-	orderHandler.RegisterEventHandlers(srv.StreamService)
+	handler.OrderService.RegisterHTTPRoutes(router)
+	handler.OrderService.RegisterEventHandlers(srv.StreamService)
 
-	productHandler := product.NewHandler(srv.DataStore)
-	productHandler.RegisterRoutes(router)
+	handler.WarehouseService.RegisterHTTPRoutes(router)
 
-	ginRouter.Run(srv.cfg.Addr)
+	handler.ArticleService.RegisterHTTPRoutes(router)
+
+	handler.ProductService.RegisterHTTPRoutes(router)
+
+	return ginRouter.Run(srv.cfg.Addr)
 }
 
 func registerGinRouter(basePath string) *gin.RouterGroup {

@@ -2,6 +2,7 @@ package product
 
 import (
 	"github.com/unicod3/horreum/pkg/dbclient"
+	"github.com/unicod3/horreum/pkg/streamer"
 	"math"
 	"time"
 )
@@ -43,14 +44,16 @@ type ArticleRequestBody struct {
 // ArticleService holds information about the datatable
 // and implements ArticleService
 type ArticleService struct {
-	dataTable dbclient.DataTable
+	DataTable     dbclient.DataTable
+	StreamChannel streamer.Channel
+	StreamTopic   string
 }
 
 // GetAll returns all the records
 func (service *ArticleService) GetAll() ([]Article, error) {
 	var articles []Article
 
-	if err := service.dataTable.FindAll(&articles); err != nil {
+	if err := service.DataTable.FindAll(&articles); err != nil {
 		return nil, err
 	}
 	return articles, nil
@@ -59,7 +62,7 @@ func (service *ArticleService) GetAll() ([]Article, error) {
 // GetById returns single record for given pk id
 func (service *ArticleService) GetById(id uint64) (*Article, error) {
 	var article Article
-	if err := service.dataTable.FindOne(dbclient.Condition{"id": id}, &article); err != nil {
+	if err := service.DataTable.FindOne(dbclient.Condition{"id": id}, &article); err != nil {
 		return nil, err
 	}
 	return &article, nil
@@ -67,7 +70,7 @@ func (service *ArticleService) GetById(id uint64) (*Article, error) {
 
 // Create creates a new record on the datastore with given struct
 func (service *ArticleService) Create(a *Article) error {
-	if err := service.dataTable.InsertReturning(a); err != nil {
+	if err := service.DataTable.InsertReturning(a); err != nil {
 		return err
 	}
 	return nil
@@ -76,7 +79,7 @@ func (service *ArticleService) Create(a *Article) error {
 // Update updates given record on the datastore by finding it with its pk
 func (service *ArticleService) Update(a *Article) error {
 	a.UpdatedAt = time.Now().UTC()
-	if err := service.dataTable.UpdateReturning(a); err != nil {
+	if err := service.DataTable.UpdateReturning(a); err != nil {
 		return err
 	}
 	return nil
@@ -84,7 +87,7 @@ func (service *ArticleService) Update(a *Article) error {
 
 // Delete deletes the given struct from database by finding it with its pk
 func (service *ArticleService) Delete(a *Article) error {
-	if err := service.dataTable.Delete(dbclient.Condition{"id": a.ID}); err != nil {
+	if err := service.DataTable.Delete(dbclient.Condition{"id": a.ID}); err != nil {
 		return err
 	}
 	return nil

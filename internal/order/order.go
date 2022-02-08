@@ -24,7 +24,7 @@ type Handler struct {
 func NewHandler(client *dbclient.DataStorage, streamChannel streamer.Channel) *Handler {
 	return &Handler{
 		OrderService: &OrderService{
-			dataTable:     (*client).NewDataCollection("orders"),
+			DataTable:     (*client).NewDataCollection("orders"),
 			StreamChannel: streamChannel,
 			StreamTopic:   "orders",
 		},
@@ -91,7 +91,7 @@ func (o *Order) deleteLines(dataTable dbclient.DataTable) error {
 // OrderService holds information about the datatable
 // and implements OrderService
 type OrderService struct {
-	dataTable     dbclient.DataTable
+	DataTable     dbclient.DataTable
 	StreamChannel streamer.Channel
 	StreamTopic   string
 }
@@ -100,11 +100,11 @@ type OrderService struct {
 func (service *OrderService) GetAll() ([]Order, error) {
 	var orders []Order
 
-	if err := service.dataTable.FindAll(&orders); err != nil {
+	if err := service.DataTable.FindAll(&orders); err != nil {
 		return nil, err
 	}
 	for i, order := range orders {
-		order.populateLines(service.dataTable)
+		order.populateLines(service.DataTable)
 		orders[i] = order
 	}
 
@@ -114,19 +114,19 @@ func (service *OrderService) GetAll() ([]Order, error) {
 // GetById returns single record for given pk id
 func (service *OrderService) GetById(id uint64) (*Order, error) {
 	var order Order
-	if err := service.dataTable.FindOne(dbclient.Condition{"id": id}, &order); err != nil {
+	if err := service.DataTable.FindOne(dbclient.Condition{"id": id}, &order); err != nil {
 		return nil, err
 	}
-	order.populateLines(service.dataTable)
+	order.populateLines(service.DataTable)
 	return &order, nil
 }
 
 // Create creates a new record on the datastore with given struct
 func (service *OrderService) Create(o *Order) error {
-	if err := service.dataTable.InsertReturning(o); err != nil {
+	if err := service.DataTable.InsertReturning(o); err != nil {
 		return err
 	}
-	err := o.createLines(service.dataTable)
+	err := o.createLines(service.DataTable)
 	if err != nil {
 		return err
 	}
@@ -147,15 +147,15 @@ func (service *OrderService) Create(o *Order) error {
 // Update updates given record on the datastore by finding it with its pk
 func (service *OrderService) Update(o *Order) error {
 	o.UpdatedAt = time.Now().UTC()
-	if err := service.dataTable.UpdateReturning(o); err != nil {
+	if err := service.DataTable.UpdateReturning(o); err != nil {
 		return err
 	}
-	err := o.deleteLines(service.dataTable)
+	err := o.deleteLines(service.DataTable)
 	if err != nil {
 		return err
 	}
 
-	err = o.createLines(service.dataTable)
+	err = o.createLines(service.DataTable)
 	if err != nil {
 		return err
 	}
@@ -164,7 +164,7 @@ func (service *OrderService) Update(o *Order) error {
 
 // Delete deletes the given struct from database by finding it with its pk
 func (service *OrderService) Delete(o *Order) error {
-	if err := service.dataTable.Delete(dbclient.Condition{"id": o.ID}); err != nil {
+	if err := service.DataTable.Delete(dbclient.Condition{"id": o.ID}); err != nil {
 		return err
 	}
 	return nil
